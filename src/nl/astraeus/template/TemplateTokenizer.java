@@ -55,6 +55,8 @@ public class TemplateTokenizer {
                         tokenType = TokenType.EACHLAST;
                     } else if (tokenText.startsWith("each(") && tokenText.endsWith(")")) {
                         tokenType = TokenType.EACH;
+                    } else if (tokenText.startsWith("foreach(") && tokenText.endsWith(")")) {
+                        tokenType = TokenType.EACH;
                     } else if (tokenText.startsWith("!")) {
                         tokenType = TokenType.PLAINVALUE;
                         tokenText = tokenText.substring(1);

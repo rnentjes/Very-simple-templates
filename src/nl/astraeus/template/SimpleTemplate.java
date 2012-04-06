@@ -148,28 +148,4 @@ public class SimpleTemplate {
         return parts2[0];
     }
 
-    public static void main(String [] args) throws IOException {
-        InputStream in = SimpleTemplate.class.getResourceAsStream("testtemplate.html");
-
-        SimpleTemplate template = new SimpleTemplate(in);
-
-        in.close();
-
-        Map<String, Object> model = new HashMap<String, Object>();
-        List<String> list = new ArrayList<String>();
-        list.add("test1");
-        list.add("test2");
-        list.add("test3");
-        list.add("test4");
-        list.add("test5");
-        list.add("test6");
-        list.add("test7");
-
-        model.put("pipo", "Mamaloe");
-        model.put("test", template);
-        model.put("list", list);
-
-        System.out.println(template.render(model));
-    }
-
 }
