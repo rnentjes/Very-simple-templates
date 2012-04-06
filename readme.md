@@ -7,6 +7,12 @@ Some text.
 
 Hello @name@,
 
+@if(person.remark)@
+Don't forget @person.remark@!
+@else@
+No news at this time.
+@endif@
+
 Here is the list:
 @each(list as entry)@
   @entry.name@   @entry.value@
@@ -46,11 +52,15 @@ Some text.
 
 Hello Mr. Smith,
 
-   Here is the list:
 
-     John   John was second!
-     Peter   Peter lost everything.
+Don't forget to send you preferences to us!
 
 
-     Your reference: somename
+Here is the list:
+
+  John   John was second!
+  Peter   Peter lost everything.
+
+
+Your reference: somename
 ```
