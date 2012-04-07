@@ -26,8 +26,8 @@ Java:
 ```java
 public class SimpleTamplateExample {
 
-    public SimpleTemplateException() {
-        SimpleTample st = new SimpleTemplate("@", "template.txt");
+    public SimpleTamplateExample() {
+        SimpleTample st = new SimpleTemplate("@", new File("template.txt"));
 
         List<NameValueObject> list = new LinkedList<NameValueObject>();
 
