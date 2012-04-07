@@ -26,8 +26,8 @@ Java:
 ```java
 public class SimpleTamplateExample {
 
-    public SimpleTemplateException() {
-        SimpleTample st = new SimpleTemplate("@", "template.txt");
+    public SimpleTamplateExample() {
+        SimpleTemplate st = SimpleTemplate.readTemplate("@", new File("template.txt"));
 
         List<NameValueObject> list = new LinkedList<NameValueObject>();
 
@@ -38,7 +38,7 @@ public class SimpleTamplateExample {
 
         model.put("name", "Mr, Smith");
         model.put("list", list);
-        model.put("person", somePersonObjectWithReferences);
+        model.put("person", somePersonObjectWithReferenceToCompany);
 
         Sting result = st.render(model);
     }
