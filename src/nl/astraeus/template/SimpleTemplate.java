@@ -1,9 +1,7 @@
 package nl.astraeus.template;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.awt.event.InputEvent;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -13,27 +11,67 @@ import java.util.*;
  */
 public class SimpleTemplate {
 
-    private char separatorChar;
-    private List<TemplatePart> parts = new ArrayList<TemplatePart>();
+    private static Map<Integer, SimpleTemplate> templateCache = new HashMap<Integer, SimpleTemplate>();
 
-    public SimpleTemplate(String template) {
-        this('#', template);
+    public static SimpleTemplate getTemplate(int hash) {
+        return templateCache.get(hash);
     }
 
-    public SimpleTemplate(char separator, String template) {
-        this.separatorChar = separator;
-
-        parseTemplate(template);
+    public static SimpleTemplate getTemplate(String template) {
+        return getTemplate('@', template);
     }
 
-    public SimpleTemplate(InputStream input) throws IOException {
-        this('#', input);
+    public static SimpleTemplate getTemplate(char templateChar, String template) {
+        int hash = getHash(templateChar, template);
+
+        SimpleTemplate result = templateCache.get(hash);
+
+        if (result == null) {
+            result = new SimpleTemplate(templateChar, template);
+
+            templateCache.put(hash, result);
+        }
+
+        return result;
     }
 
-    public SimpleTemplate(char separator, InputStream input) throws IOException {
-        this.separatorChar = separator;
+    public static SimpleTemplate getTemplate(File file) throws IOException {
+        return getTemplate('@', file);
+    }
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+    public static SimpleTemplate getTemplate(char templateChar, File file) throws IOException {
+        SimpleTemplate result = null;
+        InputStream in = null;
+
+        try {
+            in = new FileInputStream(file);
+
+            result = readTemplate(templateChar, in);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
+
+        return result;
+    }
+
+    private static int getHash(char ch, String st) {
+        return ch * 7 + st.hashCode();
+    }
+
+    public static SimpleTemplate readTemplate(InputStream in) throws IOException {
+        return readTemplate('@', in);
+    }
+
+    public static SimpleTemplate readTemplate(char templateChar, InputStream in) throws IOException {
+        String template = readInputStream(in);
+
+        return getTemplate(templateChar, template);
+    }
+
+    private static String readInputStream(InputStream in) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuilder buffer = new StringBuilder();
 
         while(reader.ready()) {
@@ -41,7 +79,26 @@ public class SimpleTemplate {
             buffer.append("\n");
         }
 
-        parseTemplate(buffer.toString());
+        return buffer.toString();
+    }
+
+    private int hash;
+    private char templateChar;
+    private List<TemplatePart> parts = new ArrayList<TemplatePart>();
+
+    public SimpleTemplate(String template) {
+        this('@', template);
+    }
+
+    public SimpleTemplate(char templateChar, String template) {
+        this.templateChar = templateChar;
+        this.hash = getHash(templateChar, template);
+
+        parseTemplate(template);
+    }
+
+    public int getHash() {
+        return hash;
     }
 
     public String render(Map<String, Object> model) {
@@ -59,7 +116,7 @@ public class SimpleTemplate {
     }
 
     private void parseTemplate(String template) {
-        TemplateTokenizer tokenizer = new TemplateTokenizer(separatorChar, template);
+        TemplateTokenizer tokenizer = new TemplateTokenizer(templateChar, template);
 
         List<TemplateToken> tokens = tokenizer.getTokens();
         Stack<List<TemplatePart>> stack = new Stack<List<TemplatePart>>();
