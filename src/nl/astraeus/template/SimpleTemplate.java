@@ -1,6 +1,5 @@
 package nl.astraeus.template;
 
-import java.awt.event.InputEvent;
 import java.io.*;
 import java.util.*;
 
@@ -21,13 +20,17 @@ public class SimpleTemplate {
         return getTemplate('@', template);
     }
 
-    public static SimpleTemplate getTemplate(char templateChar, String template) {
-        int hash = getHash(templateChar, template);
+    public static SimpleTemplate getTemplate(char delimiter, String template) {
+        return getTemplate(delimiter, delimiter, template);
+    }
+
+    public static SimpleTemplate getTemplate(char startDelimiter, char endDelimiter, String template) {
+        int hash = getHash(startDelimiter, endDelimiter, template);
 
         SimpleTemplate result = templateCache.get(hash);
 
         if (result == null) {
-            result = new SimpleTemplate(templateChar, template);
+            result = new SimpleTemplate(startDelimiter, endDelimiter, template);
 
             templateCache.put(hash, result);
         }
@@ -39,14 +42,18 @@ public class SimpleTemplate {
         return getTemplate('@', file);
     }
 
-    public static SimpleTemplate getTemplate(char templateChar, File file) throws IOException {
+    public static SimpleTemplate getTemplate(char delimiter, File file) throws IOException {
+        return getTemplate(delimiter, delimiter, file);
+    }
+
+    public static SimpleTemplate getTemplate(char startDelimiter, char endDelimiter, File file) throws IOException {
         SimpleTemplate result = null;
         InputStream in = null;
 
         try {
             in = new FileInputStream(file);
 
-            result = readTemplate(templateChar, in);
+            result = readTemplate(startDelimiter, endDelimiter, in);
         } finally {
             if (in != null) {
                 in.close();
@@ -60,14 +67,22 @@ public class SimpleTemplate {
         return ch * 7 + st.hashCode();
     }
 
+    private static int getHash(char ch1, char ch2, String st) {
+        return ch1 * 7 + ch2 * 7 + st.hashCode();
+    }
+
     public static SimpleTemplate readTemplate(InputStream in) throws IOException {
         return readTemplate('@', in);
     }
 
-    public static SimpleTemplate readTemplate(char templateChar, InputStream in) throws IOException {
+    public static SimpleTemplate readTemplate(char delimiter, InputStream in) throws IOException {
+        return readTemplate(delimiter, delimiter, in);
+    }
+
+    public static SimpleTemplate readTemplate(char startDelimiter, char endDelimiter, InputStream in) throws IOException {
         String template = readInputStream(in);
 
-        return getTemplate(templateChar, template);
+        return getTemplate(startDelimiter, endDelimiter, template);
     }
 
     private static String readInputStream(InputStream in) throws IOException {
@@ -83,16 +98,21 @@ public class SimpleTemplate {
     }
 
     private int hash;
-    private char templateChar;
+    private char startDelimiter, endDelimiter;
     private List<TemplatePart> parts = new ArrayList<TemplatePart>();
 
     public SimpleTemplate(String template) {
         this('@', template);
     }
 
-    public SimpleTemplate(char templateChar, String template) {
-        this.templateChar = templateChar;
-        this.hash = getHash(templateChar, template);
+    public SimpleTemplate(char delimiter, String template) {
+        this(delimiter, delimiter, template);
+    }
+
+    public SimpleTemplate(char startDelimiter, char endDelimiter, String template) {
+        this.startDelimiter = startDelimiter;
+        this.endDelimiter = endDelimiter;
+        this.hash = getHash(startDelimiter, endDelimiter, template);
 
         parseTemplate(template);
     }
@@ -104,11 +124,15 @@ public class SimpleTemplate {
     public String render(Map<String, Object> model) {
         StringBuilder result = new StringBuilder();
 
-        for (TemplatePart part : parts) {
-            result.append(part.render(model));
-        }
+        render(model, result);
 
         return result.toString();
+    }
+
+    public void render(Map<String, Object> model, StringBuilder result) {
+        for (TemplatePart part : parts) {
+            part.render(model, result);
+        }
     }
 
     public List<TemplatePart> getParts() {
@@ -116,7 +140,7 @@ public class SimpleTemplate {
     }
 
     private void parseTemplate(String template) {
-        TemplateTokenizer tokenizer = new TemplateTokenizer(templateChar, template);
+        TemplateTokenizer tokenizer = new TemplateTokenizer(startDelimiter, endDelimiter, template);
 
         List<TemplateToken> tokens = tokenizer.getTokens();
         Stack<List<TemplatePart>> stack = new Stack<List<TemplatePart>>();
@@ -127,21 +151,21 @@ public class SimpleTemplate {
         for (TemplateToken token : tokens) {
             switch(token.getType()) {
                 case STRING:
-                    stack.peek().add(new StringPart(token.getValue()));
+                    stack.peek().add(new StringPart(token.getLine(), token.getValue()));
                     break;
                 case VALUE:
-                    stack.peek().add(new ValuePart(token.getValue()));
+                    stack.peek().add(new ValuePart(token.getLine(), token.getValue()));
                     break;
                 case PLAINVALUE:
-                    stack.peek().add(new PlainValuePart(token.getValue()));
+                    stack.peek().add(new PlainValuePart(token.getLine(), token.getValue()));
                     break;
                 case IF:
                     stack.push(new ArrayList<TemplatePart>());
-                    currentIfPart.push(new IfPart(getParameterFromCommand(token.getValue())));
+                    currentIfPart.push(new IfPart(token.getLine(), getParameterFromCommand(token.getValue())));
                     break;
                 case IFNOT:
                     stack.push(new ArrayList<TemplatePart>());
-                    currentIfPart.push(new IfNotPart(getParameterFromCommand(token.getValue())));
+                    currentIfPart.push(new IfNotPart(token.getLine(), getParameterFromCommand(token.getValue())));
                     break;
                 case ELSE:
                     currentIfPart.peek().setIfParts(stack.pop());
@@ -159,7 +183,7 @@ public class SimpleTemplate {
                 case EACH:
                     stack.push(new ArrayList<TemplatePart>());
                     String [] parts = getParameterFromCommand(token.getValue()).split(" as ");
-                    currentForEach.push(new ForEachPart(parts[0], parts[1]));
+                    currentForEach.push(new ForEachPart(token.getLine(), parts[0], parts[1]));
                     break;
                 case EACHALT:
                     currentForEach.peek().setHasAlt(true);
@@ -189,8 +213,6 @@ public class SimpleTemplate {
         }
 
         parts = stack.pop();
-
-        assert parts.size() == 0;
     }
 
     private String getParameterFromCommand(String command) {

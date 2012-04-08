@@ -12,7 +12,7 @@ public class BooleanCondition extends Condition {
     private String[] parts;
 
     public BooleanCondition(String text) {
-        parts = text.split("\\.");
+        this.parts = text.split("\\.");
     }
 
     @Override

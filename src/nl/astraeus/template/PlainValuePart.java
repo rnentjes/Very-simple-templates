@@ -11,12 +11,14 @@ public class PlainValuePart extends TemplatePart {
 
     private String [] parts;
 
-    public PlainValuePart(String text) {
+    public PlainValuePart(int line, String text) {
+        super(line);
+
         parts = text.split("\\.");
     }
 
     @Override
-    public String render(Map<String, Object> model) {
-        return String.valueOf(getValueFromModel(model, parts));
+    public void render(Map<String, Object> model, StringBuilder result) {
+        result.append(String.valueOf(getValueFromModel(model, parts)));
     }
 }

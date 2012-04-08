@@ -15,8 +15,12 @@ public class IfPart extends TemplatePart {
     private List<TemplatePart> ifParts;
     private List<TemplatePart> elseParts;
     private boolean hasElse;
+    private String conditionText;
 
-    public IfPart(String ifCondition) {
+    public IfPart(int line, String ifCondition) {
+        super(line);
+
+        this.conditionText = ifCondition;
         this.ifCondition = new BooleanCondition(ifCondition);
         this.ifParts = new ArrayList<TemplatePart>();
         this.elseParts = new ArrayList<TemplatePart>();
@@ -43,15 +47,15 @@ public class IfPart extends TemplatePart {
     }
 
     @Override
-    public String render(Map<String, Object> model) {
-        String result = "";
-
-        if (ifCondition.evaluate(model)) {
-            result = renderParts(ifParts, model);
-        } else {
-            result = renderParts(elseParts, model);
+    public void render(Map<String, Object> model, StringBuilder result) {
+        try {
+            if (ifCondition.evaluate(model)) {
+                renderParts(ifParts, model, result);
+            } else {
+                renderParts(elseParts, model, result);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new RenderException("Can't evaluate condition ("+conditionText+")", getLine());
         }
-
-        return result;
     }
 }

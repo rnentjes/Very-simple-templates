@@ -19,7 +19,9 @@ public class ForEachPart extends TemplatePart {
     private String [] modelParts;
     private String parameterName;
 
-    public ForEachPart(String modelObject, String parameterName) {
+    public ForEachPart(int line, String modelObject, String parameterName) {
+        super(line);
+
         this.modelParts = modelObject.split("\\.");
         this.parameterName = parameterName;
 
@@ -60,9 +62,8 @@ public class ForEachPart extends TemplatePart {
     }
 
     @Override
-    public String render(Map<String, Object> model) {
+    public void render(Map<String, Object> model, StringBuilder result) {
         boolean alt = true;
-        StringBuilder result = new StringBuilder();
         Map<String, Object> tmpModel = new HashMap<String, Object>(model);
 
         tmpModel.remove(modelParts[0]);
@@ -76,19 +77,17 @@ public class ForEachPart extends TemplatePart {
                 tmpModel.put(parameterName, object);
 
                 if (hasLast && !it.hasNext()) {
-                    result.append(renderParts(lastParts, tmpModel));
+                    renderParts(lastParts, tmpModel,result);
                 } else {
                     if (hasAlt && alt) {
-                        result.append(renderParts(altParts, tmpModel));
+                        renderParts(altParts, tmpModel, result);
                     } else {
-                        result.append(renderParts(parts, tmpModel));
+                        renderParts(parts, tmpModel, result);
                     }
                 }
 
                 alt = !alt;
             }
         }
-
-        return result.toString();
     }
 }

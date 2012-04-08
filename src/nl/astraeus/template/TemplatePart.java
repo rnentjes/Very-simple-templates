@@ -10,16 +10,22 @@ import java.util.Map;
  */
 public abstract class TemplatePart {
 
-    public abstract String render(Map<String, Object> model);
+    private int line;
 
-    protected String renderParts(List<TemplatePart> parts, Map<String, Object> model) {
-        StringBuilder result = new StringBuilder();
+    protected TemplatePart(int line) {
+        this.line = line;
+    }
 
+    protected int getLine() {
+        return line;
+    }
+
+    public abstract void render(Map<String, Object> model, StringBuilder result);
+
+    protected void renderParts(List<TemplatePart> parts, Map<String, Object> model, StringBuilder result) {
         for (TemplatePart part : parts) {
-            result.append(part.render(model));
+            part.render(model, result);
         }
-
-        return result.toString();
     }
 
     protected Object getValueFromModel(Map<String, Object> model, String valueName) {
@@ -32,12 +38,25 @@ public abstract class TemplatePart {
         int index = 0;
         Object value = null;
 
-        if (parts.length > index) {
-            value = model.get(parts[index]);
+        try {
+            if (parts.length > index) {
+                value = model.get(parts[index]);
 
-            while(value != null && parts.length > ++index) {
-                value = ReflectHelper.get().getMethodValue(value, parts[index]);
+                while(value != null && parts.length > ++index) {
+                    value = ReflectHelper.get().getMethodValue(value, parts[index]);
+                }
             }
+        } catch (IllegalArgumentException e) {
+            String partString = "";
+
+            for (String p : parts) {
+                if (partString.length() > 0) {
+                    partString = partString + ".";
+                }
+                partString =  partString + p;
+            }
+
+            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getLine());
         }
 
         return value;

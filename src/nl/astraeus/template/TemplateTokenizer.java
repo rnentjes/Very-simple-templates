@@ -12,15 +12,15 @@ public class TemplateTokenizer {
 
     private List<TemplateToken> tokens;
 
-    public TemplateTokenizer(char separatorChar, String template) {
-        tokens = parseTemplateIntoTokens(separatorChar, template);
+    public TemplateTokenizer(char startDelimiter, char endDelimiter, String template) {
+        tokens = parseTemplateIntoTokens(startDelimiter, endDelimiter, template);
     }
 
     public List<TemplateToken> getTokens() {
         return tokens;
     }
 
-    private List<TemplateToken> parseTemplateIntoTokens(char separatorChar, String template) {
+    private List<TemplateToken> parseTemplateIntoTokens(char startDelimiter, char endDelimiter, String template) {
         List<TemplateToken> tokens = new ArrayList<TemplateToken>();
         StringBuilder current = new StringBuilder();
 
@@ -31,11 +31,11 @@ public class TemplateTokenizer {
         for (int index = 0; index < template.length(); index++) {
             char ch = template.charAt(index);
 
-            if (ch == separatorChar) {
+            if (ch == startDelimiter || ch == endDelimiter) {
                 if (escape) {
-                    current.append(separatorChar);
+                    current.append(ch);
                     escape = false;
-                } else if (command) {
+                } else if (ch == endDelimiter && command) {
                     TokenType tokenType;
                     String tokenText = current.toString();
 
@@ -67,10 +67,12 @@ public class TemplateTokenizer {
                     tokens.add(new TemplateToken(tokenType, tokenText, line));
                     command = false;
                     current =  new StringBuilder();
-                } else {
+                } else if (ch == startDelimiter) {
                     command = true;
                     tokens.add(new TemplateToken(TokenType.STRING, current.toString(), line));
                     current =  new StringBuilder();
+                } else {
+                    throw new ParseException("Unexpected delimiter '"+ch+"'", line);
                 }
 
             } else {
@@ -98,15 +100,5 @@ public class TemplateTokenizer {
             tokens.add(new TemplateToken(TokenType.STRING, current.toString(), line));
         }
         return tokens;
-    }
-
-    public static void main(String [] args) {
-        String text = "bla $if(pipo)$th\n\nis$if$$else$that$endif$";
-
-        TemplateTokenizer tokens = new TemplateTokenizer('$', text);
-
-        for (TemplateToken token : tokens.getTokens()) {
-            System.out.println("Token: "+token.getType()+" "+token.getValue());
-        }
     }
 }

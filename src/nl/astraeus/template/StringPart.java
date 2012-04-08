@@ -11,12 +11,14 @@ public class StringPart extends TemplatePart {
 
     private String part;
 
-    public StringPart(String part) {
+    public StringPart(int line, String part) {
+        super(line);
+
         this.part = part;
     }
 
     @Override
-    public String render(Map<String, Object> model) {
-        return part;
+    public void render(Map<String, Object> model, StringBuilder result) {
+        result.append(part);
     }
 }

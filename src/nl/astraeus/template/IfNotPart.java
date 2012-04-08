@@ -7,8 +7,8 @@ package nl.astraeus.template;
  */
 public class IfNotPart extends IfPart {
 
-    public IfNotPart(String ifCondition) {
-        super(ifCondition);
+    public IfNotPart(int line, String ifCondition) {
+        super(line, ifCondition);
 
         this.ifCondition = new BooleanNotCondition(ifCondition);
     }

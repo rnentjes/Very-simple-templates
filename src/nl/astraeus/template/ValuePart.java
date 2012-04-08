@@ -11,18 +11,33 @@ public class ValuePart extends TemplatePart {
 
     private String [] parts;
 
-    public ValuePart(String text) {
+    public ValuePart(int line, String text) {
+        super(line);
+
         parts = text.split("\\.");
     }
 
     @Override
-    public String render(Map<String, Object> model) {
-        String result = String.valueOf(getValueFromModel(model, parts));
+    public void render(Map<String, Object> model, StringBuilder result) {
+        Object object = getValueFromModel(model, parts);
 
-        // get current output target and escape our result
-        // result = escapedResult...
+        if (object != null) {
+            // get current output target and escape our result
+            // result = escapedResult...
 
-        return result;
+            result.append(String.valueOf(object));
+        } else {
+            String partString = "";
+
+            for (String p : parts) {
+                if (partString.length() > 0) {
+                    partString = partString + ".";
+                }
+                partString =  partString + p;
+            }
+
+            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getLine());
+        }
     }
 
 }
