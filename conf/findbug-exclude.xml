@@ -38,17 +38,5 @@
      <Match>
        <Bug pattern="DM_BOOLEAN_CTOR" />
      </Match>
-     <Match>
-       <Bug pattern="SE_NO_SERIALVERSIONID" />
-     </Match>
-     <Match>
-       <Bug pattern="SF_SWITCH_FALLTHROUGH" />
-     </Match>     
-     <Match>
-       <Bug pattern="SKIPPED_CLASS_TOO_BIG" />
-     </Match>
-     <Match>
-       <Bug pattern="DM_GC" />
-     </Match>
 </FindBugsFilter>
 
