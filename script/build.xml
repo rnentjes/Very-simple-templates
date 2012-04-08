@@ -13,6 +13,13 @@
         </fileset>
     </path>
 
+    <path id="findbugs.class.path">
+        <pathelement location="${build.classes.dir}"/>
+        <fileset dir="${build.lib.dir}">
+            <include name="findbugs-1.3.9/**/*.jar"/>
+        </fileset>
+    </path>
+
     <path id="test.class.path">
         <pathelement location="${build.classes.dir}"/>
         <pathelement location="${test.classes.dir}"/>
@@ -153,18 +160,14 @@
     <!-- FindBugs                                                            -->
     <!-- =================================================================== -->
     <target name="findbugs" depends="compile">
-        <!-- home="${findbugs.home}" -->
         <findbugs home="${build.lib.dir}/findbugs-1.3.9" output="xml" sourcepath="${src.dir}"
                   outputFile="${build.dir}/findbugs.xml"
                   reportLevel="medium"
                   excludeFilter="${config.dir}/findbug-exclude.xml"
                   jvmargs="-Xmx512m"
                   timeout="1200000">
-
             <classpath refid="build.class.path"/>
-            <!-- <auxClasspath path="${web.lib.dir}" /> -->
             <class location="${build.classes.dir}"/>
-            <!-- sourcePath path="${src.dir}" /-->
         </findbugs>
 
     </target>
