@@ -1,9 +1,11 @@
 package nl.atraeus.template;
 
 import junit.framework.Assert;
+import nl.astraeus.template.ParseException;
 import nl.astraeus.template.SimpleTemplate;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -132,6 +134,16 @@ public class SimpleTemplateTest {
         persons.add(new Person("name2"));
 
         Assert.assertEquals("Name: name1,\nname2\n", st.render(model));
+    }
+
+    @Test(expected = ParseException.class)
+    public void testTemplateForEachError() throws IOException {
+        SimpleTemplate st = SimpleTemplate.readTemplate('{', '}', getClass().getResourceAsStream("testtemplate1.txt"));
+    }
+
+    @Test(expected = ParseException.class)
+    public void testTemplateIfError() throws IOException {
+        SimpleTemplate st = SimpleTemplate.readTemplate('{', '}', getClass().getResourceAsStream("testtemplate2.txt"));
     }
 
     @Test

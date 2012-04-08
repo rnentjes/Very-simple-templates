@@ -212,6 +212,28 @@ public class SimpleTemplate {
         }
 
         parts = stack.pop();
+
+        if (stack.size() > 0) {
+            if (currentForEach.size() > 0) {
+                ForEachPart part = currentForEach.pop();
+
+                throw new ParseException("Foreach not closed", part.getLine());
+            } else if (currentIfPart.size() > 0) {
+                IfPart part = currentIfPart.pop();
+
+                throw new ParseException("If not closed", part.getLine());
+            } else {
+                List<TemplatePart> parts = stack.pop();
+
+                if (!parts.isEmpty()) {
+                    TemplatePart part = parts.get(0);
+
+                    throw new ParseException("Template not parsed completely, last remaining part: "+part, part.getLine());
+                } else {
+                    throw new ParseException("Template not parsed completely, coulnd't retrieve last remaining part (giving up)", -1);
+                }
+            }
+        }
     }
 
     private String getParameterFromCommand(String command) {
