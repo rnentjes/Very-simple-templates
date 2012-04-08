@@ -16,6 +16,9 @@
     <path id="test.class.path">
         <pathelement location="${build.classes.dir}"/>
         <pathelement location="${test.classes.dir}"/>
+        <fileset dir="${build.lib.dir}">
+            <include name="junit/**/*.jar"/>
+        </fileset>
     </path>
 
     <path id="junit.class.path">
@@ -239,8 +242,17 @@
     <!-- =================================================================== -->
     <target name="compiletest" depends="prepare, compile, copynonjavafiles">
         <!-- generate.jsp, webdoclet,  -->
-        <javac encoding="utf-8" destdir="${test.classes.dir}" includes="**" classpathref="test.class.path" debug="on"
-               debuglevel="lines,vars,source" deprecation="on" optimize="on" verbose="false" target="1.5" source="1.5">
+        <javac encoding="utf-8"
+               destdir="${test.classes.dir}"
+               includes="**"
+               classpathref="test.class.path"
+               debug="on"
+               debuglevel="lines,vars,source"
+               deprecation="on"
+               optimize="on"
+               verbose="false"
+               target="1.5"
+               source="1.5">
             <src path="${test.dir}"/>
         </javac>
     </target>
