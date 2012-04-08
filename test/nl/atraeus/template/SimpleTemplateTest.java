@@ -16,6 +16,18 @@ import java.util.Map;
  */
 public class SimpleTemplateTest {
 
+    public static class Person {
+        String name;
+
+        private Person(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
     @Test
     public void testTemplateValue() {
         SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {name}");
@@ -27,16 +39,15 @@ public class SimpleTemplateTest {
         Assert.assertEquals("Name: person name", st.render(model));
     }
 
-    public static class Person {
-        String name;
+    @Test
+    public void testTemplatePlainValue() {
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {!name}");
 
-        private Person(String name) {
-            this.name = name;
-        }
+        Map<String, Object> model = new HashMap<String, Object>();
 
-        public String getName() {
-            return name;
-        }
+        model.put("name", "person <name>");
+
+        Assert.assertEquals("Name: person <name>", st.render(model));
     }
 
     @Test
@@ -121,6 +132,13 @@ public class SimpleTemplateTest {
         persons.add(new Person("name2"));
 
         Assert.assertEquals("Name: name1,\nname2\n", st.render(model));
+    }
+
+    @Test
+    public void testTemplateBackslashEscape() {
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Escape: \\{ \\\\");
+
+        Assert.assertEquals("Escape: { \\", st.render(new HashMap<String, Object>()));
     }
 
 }
