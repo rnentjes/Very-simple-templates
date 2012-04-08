@@ -5,6 +5,8 @@ import nl.astraeus.template.SimpleTemplate;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,6 +74,53 @@ public class SimpleTemplateTest {
         model.put("person", new Person("person name"));
 
         Assert.assertEquals("Name: person name", st.render(model));
+    }
+
+    @Test
+    public void testTemplateIfNot() {
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {ifnot(person)}<empty>{endif}");
+
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        Assert.assertEquals("Name: <empty>", st.render(model));
+
+        model.put("person", new Person("person name"));
+
+        Assert.assertEquals("Name: ", st.render(model));
+    }
+
+    @Test
+    public void testTemplateIfNotElse() {
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {ifnot(person)}<empty>{else}{person.name}{endif}");
+
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        Assert.assertEquals("Name: <empty>", st.render(model));
+
+        model.put("person", new Person("person name"));
+
+        Assert.assertEquals("Name: person name", st.render(model));
+    }
+
+    @Test
+    public void testTemplateForEach() {
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {foreach(persons as person)}{person.name},\n{eachlast}{person.name}\n{eachend}");
+
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        Assert.assertEquals("Name: ", st.render(model));
+
+        List<Person> persons = new LinkedList<Person>();
+
+        persons.add(new Person("name1"));
+
+        model.put("persons", persons);
+
+        Assert.assertEquals("Name: name1\n", st.render(model));
+
+        persons.add(new Person("name2"));
+
+        Assert.assertEquals("Name: name1,\nname2\n", st.render(model));
     }
 
 }

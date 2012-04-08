@@ -179,6 +179,9 @@ public class SimpleTemplate {
                 case EACH:
                     stack.push(new ArrayList<TemplatePart>());
                     String [] parts = getParameterFromCommand(token.getValue()).split(" as ");
+                    if (parts.length != 2) {
+                        throw new ParseException("Can't parse foreach expression, eg (persons as person)", token.getLine());
+                    }
                     currentForEach.push(new ForEachPart(token.getLine(), parts[0], parts[1]));
                     break;
                 case EACHALT:
