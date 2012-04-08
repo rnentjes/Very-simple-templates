@@ -5,20 +5,20 @@ Template:
 ```text
 Some text.
 
-Hello @name@,
+Hello {name},
 
-@if(person.remark)@
-Don't forget @person.remark@!
-@else@
+{if(person.remark)}
+Don't forget {person.remark}!
+{else}
 No news at this time.
-@endif@
+{endif}
 
 Here is the list:
-@each(list as entry)@
-  @entry.name@   @entry.value@
-@endeach@
+{foreach(list as entry)}
+  {entry.name}   {entry.value}
+{endeach}
 
-Your reference: @person.company.name@
+Your reference: {person.company.name}
 ```
 
 Java:
@@ -27,7 +27,7 @@ Java:
 public class SimpleTamplateExample {
 
     public SimpleTamplateExample() {
-        SimpleTemplate st = SimpleTemplate.readTemplate("@", new File("template.txt"));
+        SimpleTemplate st = SimpleTemplate.readTemplate('{', '}', new File("template.txt"));
 
         List<NameValueObject> list = new LinkedList<NameValueObject>();
 
