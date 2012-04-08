@@ -63,10 +63,6 @@ public class SimpleTemplate {
         return result;
     }
 
-    private static int getHash(char ch, String st) {
-        return ch * 7 + st.hashCode();
-    }
-
     private static int getHash(char ch1, char ch2, String st) {
         return ch1 * 7 + ch2 * 7 + st.hashCode();
     }
