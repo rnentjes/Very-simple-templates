@@ -16,5 +16,7 @@ public enum TokenType {
     EACH,
     EACHEND,
     EACHALT,
-    EACHLAST
+    EACHLAST,
+    ESCAPENONE,
+    ESCAPEHTML
 }

@@ -143,14 +143,21 @@ public class SimpleTemplate {
         stack.push(new ArrayList<TemplatePart>());
         Stack<IfPart> currentIfPart = new Stack<IfPart>();
         Stack<ForEachPart> currentForEach = new Stack<ForEachPart>();
+        EscapeMode currentEscapeMode = EscapeMode.NONE;
 
         for (TemplateToken token : tokens) {
             switch(token.getType()) {
+                case ESCAPEHTML:
+                    currentEscapeMode = EscapeMode.HTML;
+                    break;
+                case ESCAPENONE:
+                    currentEscapeMode = EscapeMode.NONE;
+                    break;
                 case STRING:
                     stack.peek().add(new StringPart(token.getLine(), token.getValue()));
                     break;
                 case VALUE:
-                    stack.peek().add(new ValuePart(token.getLine(), token.getValue()));
+                    stack.peek().add(new ValuePart(currentEscapeMode, token.getLine(), token.getValue()));
                     break;
                 case PLAINVALUE:
                     stack.peek().add(new PlainValuePart(token.getLine(), token.getValue()));

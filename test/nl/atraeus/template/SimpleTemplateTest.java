@@ -104,15 +104,15 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateIfNotElse() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {ifnot(person)}<empty>{else}{person.name}{endif}");
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "{escapehtml}\nName: {ifnot(person)}<empty>{else}{person.name}{endif}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
-        Assert.assertEquals("Name: <empty>", st.render(model));
+        Assert.assertEquals("\nName: <empty>", st.render(model));
 
-        model.put("person", new Person("person name"));
+        model.put("person", new Person("person <> name"));
 
-        Assert.assertEquals("Name: person name", st.render(model));
+        Assert.assertEquals("\nName: person&nbsp;&lt;&gt;&nbsp;name", st.render(model));
     }
 
     @Test
