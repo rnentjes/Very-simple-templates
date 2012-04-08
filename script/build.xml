@@ -35,7 +35,7 @@
 
     <path id="cobertura.class.path">
         <pathelement location="${test.classes.dir}"/>
-        <fileset dir="${build.lib.dir}/build/junit">
+        <fileset dir="${build.lib.dir}/junit">
             <include name="**/*.jar"/>
         </fileset>
         <fileset dir="${build.lib.dir}/cobertura">
