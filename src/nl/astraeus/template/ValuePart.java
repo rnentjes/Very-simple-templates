@@ -44,6 +44,9 @@ public class ValuePart extends TemplatePart {
             case HTML:
                 escapeHtml(value, result);
                 break;
+            case HTMLBR:
+                escapeHtmlBR(value, result);
+                break;
             case JAVASCRIPT:
             case JSON:
             case XML:
@@ -80,6 +83,42 @@ public class ValuePart extends TemplatePart {
                     break;
                 case ' ':
                     result.append("&nbsp;");
+                    break;
+                default:
+                    result.append(ch);
+            }
+        }
+
+    }
+
+    private void escapeHtmlBR(String value, StringBuilder result) {
+        for (int index = 0; index < value.length(); index++) {
+            char ch = value.charAt(index);
+
+            // &, <, >, ", ', `, , !, @, $, %, (, ), =, +, {, }, [, and ]
+            // http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
+
+            switch(ch) {
+                case '<':
+                    result.append("&lt;");
+                    break;
+                case '>':
+                    result.append("&gt;");
+                    break;
+                case '&':
+                    result.append("&amp;");
+                    break;
+                case '"':
+                    result.append("&quot;");
+                    break;
+                case '\'':
+                    result.append("&#39;");
+                    break;
+                case ' ':
+                    result.append("&nbsp;");
+                    break;
+                case '\n':
+                    result.append("<br/>\n");
                     break;
                 default:
                     result.append(ch);

@@ -161,6 +161,24 @@ public class SimpleTemplate {
         return parts;
     }
 
+    private static class EscapeModeInfo {
+        private EscapeMode mode;
+        private int line;
+
+        private EscapeModeInfo(EscapeMode mode, int line) {
+            this.mode = mode;
+            this.line = line;
+        }
+
+        public EscapeMode getMode() {
+            return mode;
+        }
+
+        public int getLine() {
+            return line;
+        }
+    }
+
     private void parseTemplate(String template) {
         TemplateTokenizer tokenizer = new TemplateTokenizer(startDelimiter, endDelimiter, template);
 
@@ -169,27 +187,34 @@ public class SimpleTemplate {
         stack.push(new ArrayList<TemplatePart>());
         Stack<IfPart> currentIfPart = new Stack<IfPart>();
         Stack<ForEachPart> currentForEach = new Stack<ForEachPart>();
-        EscapeMode currentEscapeMode = defaultEscapeMode;
+        Stack<EscapeModeInfo> currentEscapeMode = new Stack<EscapeModeInfo>();
+        currentEscapeMode.push(new EscapeModeInfo(defaultEscapeMode, -1));
 
         for (TemplateToken token : tokens) {
             switch(token.getType()) {
                 case ESCAPEHTML:
-                    currentEscapeMode = EscapeMode.HTML;
+                    currentEscapeMode.push(new EscapeModeInfo(EscapeMode.HTML, token.getLine()));
+                    break;
+                case ESCAPEHTMLBR:
+                    currentEscapeMode.push(new EscapeModeInfo(EscapeMode.HTMLBR, token.getLine()));
                     break;
                 case ESCAPEJS:
-                    currentEscapeMode = EscapeMode.JAVASCRIPT;
+                    currentEscapeMode.push(new EscapeModeInfo(EscapeMode.JAVASCRIPT, token.getLine()));
                     break;
                 case ESCAPEXML:
-                    currentEscapeMode = EscapeMode.XML;
+                    currentEscapeMode.push(new EscapeModeInfo(EscapeMode.XML, token.getLine()));
                     break;
                 case ESCAPENONE:
-                    currentEscapeMode = EscapeMode.NONE;
+                    currentEscapeMode.push(new EscapeModeInfo(EscapeMode.NONE, token.getLine()));
+                    break;
+                case ESCAPEEND:
+                    currentEscapeMode.pop();
                     break;
                 case STRING:
                     stack.peek().add(new StringPart(token.getLine(), token.getValue()));
                     break;
                 case VALUE:
-                    stack.peek().add(new ValuePart(currentEscapeMode, token.getLine(), token.getValue()));
+                    stack.peek().add(new ValuePart(currentEscapeMode.peek().getMode(), token.getLine(), token.getValue()));
                     break;
                 case PLAINVALUE:
                     stack.peek().add(new PlainValuePart(token.getLine(), token.getValue()));
@@ -261,6 +286,10 @@ public class SimpleTemplate {
                 IfPart part = currentIfPart.pop();
 
                 throw new ParseException("If not closed", part.getLine());
+            } else if (currentEscapeMode.size() > 1) {
+                EscapeModeInfo modeInfo = currentEscapeMode.pop();
+
+                throw new ParseException("Escape block not closed ("+modeInfo.getMode().toString().toLowerCase()+")", modeInfo.getLine());
             } else {
                 List<TemplatePart> parts = stack.pop();
 

@@ -19,6 +19,8 @@ public enum TokenType {
     EACHLAST,
     ESCAPENONE,
     ESCAPEHTML,
+    ESCAPEHTMLBR,
     ESCAPEJS,
-    ESCAPEXML
+    ESCAPEXML,
+    ESCAPEEND
 }

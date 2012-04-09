@@ -8,6 +8,7 @@ package nl.astraeus.template;
 public enum EscapeMode {
     NONE,
     HTML,
+    HTMLBR,
     XML,
     JAVASCRIPT,
     JSON

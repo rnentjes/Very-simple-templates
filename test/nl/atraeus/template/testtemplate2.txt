@@ -10,4 +10,4 @@ Name:
  Some text here
 {ifx}
 
-For each with no end
+If with no end
