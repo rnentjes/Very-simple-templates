@@ -205,7 +205,10 @@
         </javac>
     </target>
 
-    <target name="copynonjavafiles-src" depends="prepare">
+    <!-- =================================================================== -->
+    <!-- Copy non java files                                                 -->
+    <!-- =================================================================== -->
+    <target name="copynonjavafiles" depends="prepare">
         <!-- generate.jsp, webdoclet,  -->
         <!-- copy all non java class file to classes directorty -->
         <copy todir="${build.classes.dir}">
@@ -214,14 +217,7 @@
                 <exclude name="**/*.class"/>
             </fileset>
         </copy>
-        </target>
-    <!-- =================================================================== -->
-    <!-- Copy non java files                                                 -->
-    <!-- =================================================================== -->
-    <target name="copynonjavafiles" depends="prepare, copynonjavafiles-src">
-        <!-- generate.jsp, webdoclet,  -->
-        <!-- copy all non java class file to classes directorty -->
-        <copy todir="${build.classes.dir}">
+        <copy todir="${test.classes.dir}">
             <fileset dir="${test.dir}">
                 <exclude name="**/*.java"/>
                 <exclude name="**/*.class"/>

@@ -1,9 +1,6 @@
-package nl.atraeus.template;
+package nl.astraeus.template;
 
 import junit.framework.Assert;
-import nl.astraeus.template.EscapeMode;
-import nl.astraeus.template.ParseException;
-import nl.astraeus.template.SimpleTemplate;
 import org.junit.Test;
 
 import java.io.IOException;
