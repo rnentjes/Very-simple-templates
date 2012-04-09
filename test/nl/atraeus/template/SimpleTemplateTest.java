@@ -113,7 +113,7 @@ public class SimpleTemplateTest {
 
         model.put("person", new Person("person <> name"));
 
-        Assert.assertEquals("Name: person&nbsp;&lt;&gt;&nbsp;name", st.render(model));
+        Assert.assertEquals("Name: person &lt;&gt; name", st.render(model));
     }
 
     @Test

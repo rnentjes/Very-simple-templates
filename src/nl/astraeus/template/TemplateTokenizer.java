@@ -61,12 +61,16 @@ public class TemplateTokenizer {
                         tokenType = TokenType.ESCAPEEND;
                     } else if (tokenText.equals("endif")) {
                         tokenType = TokenType.ENDIF;
-                    } else if (tokenText.equals("eachend") || tokenText.equals("endeach")) {
+                    } else if (tokenText.equals("eachend")) {
                         tokenType = TokenType.EACHEND;
-                    } else if (tokenText.equals("eachalt") || tokenText.equals("lasteach")) {
+                    } else if (tokenText.equals("eachalt")) {
                         tokenType = TokenType.EACHALT;
-                    } else if (tokenText.equals("eachlast") || tokenText.equals("lasteach")) {
+                    } else if (tokenText.equals("eachfirst")) {
+                        tokenType = TokenType.EACHFIRST;
+                    } else if (tokenText.equals("eachlast")) {
                         tokenType = TokenType.EACHLAST;
+                    } else if (tokenText.equals("eachmain")) {
+                        tokenType = TokenType.EACHMAIN;
                     } else if (tokenText.startsWith("each(") && tokenText.endsWith(")")) {
                         tokenType = TokenType.EACH;
                     } else if (tokenText.startsWith("foreach(") && tokenText.endsWith(")")) {

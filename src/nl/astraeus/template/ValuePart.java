@@ -81,9 +81,6 @@ public class ValuePart extends TemplatePart {
                 case '\'':
                     result.append("&#39;");
                     break;
-                case ' ':
-                    result.append("&nbsp;");
-                    break;
                 default:
                     result.append(ch);
             }
@@ -113,9 +110,6 @@ public class ValuePart extends TemplatePart {
                     break;
                 case '\'':
                     result.append("&#39;");
-                    break;
-                case ' ':
-                    result.append("&nbsp;");
                     break;
                 case '\n':
                     result.append("<br/>\n");

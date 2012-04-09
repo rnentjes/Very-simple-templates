@@ -247,29 +247,30 @@ public class SimpleTemplate {
                         throw new ParseException("Can't parse foreach expression, eg (persons as person)", token.getLine());
                     }
                     currentForEach.push(new ForEachPart(token.getLine(), parts[0], parts[1]));
+                    currentForEach.peek().setIsMainPart();
+                    break;
+                case EACHMAIN:
+                    currentForEach.peek().setCurrentParts(stack.pop());
+                    currentForEach.peek().setIsMainPart();
+                    stack.push(new ArrayList<TemplatePart>());
+                    break;
+                case EACHFIRST:
+                    currentForEach.peek().setCurrentParts(stack.pop());
+                    currentForEach.peek().setIsFirstPart();
+                    stack.push(new ArrayList<TemplatePart>());
                     break;
                 case EACHALT:
-                    currentForEach.peek().setHasAlt(true);
-                    currentForEach.peek().setParts(stack.pop());
+                    currentForEach.peek().setCurrentParts(stack.pop());
+                    currentForEach.peek().setIsAltPart();
                     stack.push(new ArrayList<TemplatePart>());
                     break;
                 case EACHLAST:
-                    currentForEach.peek().setHasLast(true);
-                    if (currentForEach.peek().isHasAlt()) {
-                        currentForEach.peek().setAltParts(stack.pop());
-                    } else {
-                        currentForEach.peek().setParts(stack.pop());
-                    }
+                    currentForEach.peek().setCurrentParts(stack.pop());
+                    currentForEach.peek().setIsLastPart();
                     stack.push(new ArrayList<TemplatePart>());
                     break;
                 case EACHEND:
-                    if (currentForEach.peek().isHasLast()) {
-                        currentForEach.peek().setLastParts(stack.pop());
-                    } else if (currentForEach.peek().isHasAlt()) {
-                        currentForEach.peek().setAltParts(stack.pop());
-                    } else {
-                        currentForEach.peek().setParts(stack.pop());
-                    }
+                    currentForEach.peek().setCurrentParts(stack.pop());
                     stack.peek().add(currentForEach.pop());
                     break;
             }
