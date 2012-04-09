@@ -44,7 +44,7 @@ public class ForEachPart extends TemplatePart {
         switch(currentPart) {
             case MAIN:
                 if (this.parts != null) {
-                    throw new ParseException("Encountered double main part in foreach", getLine());
+                    this.parts.addAll(parts);
                 } else {
                     this.parts = parts;
                 }
@@ -99,7 +99,7 @@ public class ForEachPart extends TemplatePart {
 
         Map<String, Object> tmpModel = new HashMap<String, Object>(model);
 
-        tmpModel.remove(modelParts[0]);
+        //tmpModel.remove(modelParts[0]);
         Object value = getValueFromModel(model, modelParts);
 
         if (value instanceof Iterable) {
