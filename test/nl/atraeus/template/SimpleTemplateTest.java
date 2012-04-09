@@ -1,6 +1,7 @@
 package nl.atraeus.template;
 
 import junit.framework.Assert;
+import nl.astraeus.template.EscapeMode;
 import nl.astraeus.template.ParseException;
 import nl.astraeus.template.SimpleTemplate;
 import org.junit.Test;
@@ -104,15 +105,15 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateIfNotElse() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "{escapehtml}\nName: {ifnot(person)}<empty>{else}{person.name}{endif}");
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', EscapeMode.HTML, "Name: {ifnot(person)}<empty>{else}{person.name}{endif}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
-        Assert.assertEquals("\nName: <empty>", st.render(model));
+        Assert.assertEquals("Name: <empty>", st.render(model));
 
         model.put("person", new Person("person <> name"));
 
-        Assert.assertEquals("\nName: person&nbsp;&lt;&gt;&nbsp;name", st.render(model));
+        Assert.assertEquals("Name: person&nbsp;&lt;&gt;&nbsp;name", st.render(model));
     }
 
     @Test

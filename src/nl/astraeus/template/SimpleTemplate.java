@@ -28,6 +28,10 @@ public class SimpleTemplate {
         return getTemplate(delimiter, delimiter, defaultEscapeMode, template);
     }
 
+    public static SimpleTemplate getTemplate(char startDelimiter, char endDelimiter, String template) {
+        return getTemplate(startDelimiter,  endDelimiter, EscapeMode.NONE, template);
+    }
+
     public static SimpleTemplate getTemplate(char startDelimiter, char endDelimiter, EscapeMode defaultEscapeMode, String template) {
         int hash = getHash(startDelimiter, endDelimiter, template);
 
