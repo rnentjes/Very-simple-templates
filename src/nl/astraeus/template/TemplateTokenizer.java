@@ -47,9 +47,13 @@ public class TemplateTokenizer {
                         tokenType = TokenType.ELSE;
                     } else if (tokenText.equals("endif")) {
                         tokenType = TokenType.ENDIF;
-                    } else if (tokenText.equals("escapehtml")) {
+                    } else if (tokenText.equals("escape(html)")) {
                         tokenType = TokenType.ESCAPEHTML;
-                    } else if (tokenText.equals("escapenone")) {
+                    } else if (tokenText.equals("escape(js)")) {
+                        tokenType = TokenType.ESCAPEJS;
+                    } else if (tokenText.equals("escape(xml)")) {
+                        tokenType = TokenType.ESCAPEXML;
+                    } else if (tokenText.equals("escape(none)")) {
                         tokenType = TokenType.ESCAPENONE;
                     } else if (tokenText.equals("endif")) {
                         tokenType = TokenType.ENDIF;

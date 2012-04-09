@@ -21,16 +21,20 @@ public class SimpleTemplate {
     }
 
     public static SimpleTemplate getTemplate(char delimiter, String template) {
-        return getTemplate(delimiter, delimiter, template);
+        return getTemplate(delimiter, delimiter, EscapeMode.NONE, template);
     }
 
-    public static SimpleTemplate getTemplate(char startDelimiter, char endDelimiter, String template) {
+    public static SimpleTemplate getTemplate(char delimiter, EscapeMode defaultEscapeMode, String template) {
+        return getTemplate(delimiter, delimiter, defaultEscapeMode, template);
+    }
+
+    public static SimpleTemplate getTemplate(char startDelimiter, char endDelimiter, EscapeMode defaultEscapeMode, String template) {
         int hash = getHash(startDelimiter, endDelimiter, template);
 
         SimpleTemplate result = templateCache.get(hash);
 
         if (result == null) {
-            result = new SimpleTemplate(startDelimiter, endDelimiter, template);
+            result = new SimpleTemplate(startDelimiter, endDelimiter, defaultEscapeMode, template);
 
             templateCache.put(hash, result);
         }
@@ -75,10 +79,18 @@ public class SimpleTemplate {
         return readTemplate(delimiter, delimiter, in);
     }
 
+    public static SimpleTemplate readTemplate(char delimiter, EscapeMode defaultEscapeMode, InputStream in) throws IOException {
+        return readTemplate(delimiter, delimiter, defaultEscapeMode, in);
+    }
+
     public static SimpleTemplate readTemplate(char startDelimiter, char endDelimiter, InputStream in) throws IOException {
+        return readTemplate(startDelimiter, endDelimiter, EscapeMode.NONE, in);
+    }
+
+    public static SimpleTemplate readTemplate(char startDelimiter, char endDelimiter, EscapeMode defaultEscapeMode, InputStream in) throws IOException {
         String template = readInputStream(in);
 
-        return getTemplate(startDelimiter, endDelimiter, template);
+        return getTemplate(startDelimiter, endDelimiter, defaultEscapeMode, template);
     }
 
     private static String readInputStream(InputStream in) throws IOException {
@@ -95,19 +107,29 @@ public class SimpleTemplate {
 
     private int hash;
     private char startDelimiter, endDelimiter;
+    private EscapeMode defaultEscapeMode = EscapeMode.NONE;
     private List<TemplatePart> parts = new ArrayList<TemplatePart>();
 
     public SimpleTemplate(String template) {
         this('@', template);
     }
 
-    public SimpleTemplate(char delimiter, String template) {
-        this(delimiter, delimiter, template);
+    public SimpleTemplate(EscapeMode defaultEscapeMode, String template) {
+        this('@', defaultEscapeMode, template);
     }
 
-    public SimpleTemplate(char startDelimiter, char endDelimiter, String template) {
+    public SimpleTemplate(char delimiter, String template) {
+        this(delimiter, delimiter, EscapeMode.NONE, template);
+    }
+
+    public SimpleTemplate(char delimiter, EscapeMode defaultEscapeMode, String template) {
+        this(delimiter, delimiter, defaultEscapeMode, template);
+    }
+
+    public SimpleTemplate(char startDelimiter, char endDelimiter, EscapeMode defaultEscapeMode, String template) {
         this.startDelimiter = startDelimiter;
         this.endDelimiter = endDelimiter;
+        this.defaultEscapeMode = defaultEscapeMode;
         this.hash = getHash(startDelimiter, endDelimiter, template);
 
         parseTemplate(template);
@@ -143,12 +165,18 @@ public class SimpleTemplate {
         stack.push(new ArrayList<TemplatePart>());
         Stack<IfPart> currentIfPart = new Stack<IfPart>();
         Stack<ForEachPart> currentForEach = new Stack<ForEachPart>();
-        EscapeMode currentEscapeMode = EscapeMode.NONE;
+        EscapeMode currentEscapeMode = defaultEscapeMode;
 
         for (TemplateToken token : tokens) {
             switch(token.getType()) {
                 case ESCAPEHTML:
                     currentEscapeMode = EscapeMode.HTML;
+                    break;
+                case ESCAPEJS:
+                    currentEscapeMode = EscapeMode.JAVASCRIPT;
+                    break;
+                case ESCAPEXML:
+                    currentEscapeMode = EscapeMode.XML;
                     break;
                 case ESCAPENONE:
                     currentEscapeMode = EscapeMode.NONE;
