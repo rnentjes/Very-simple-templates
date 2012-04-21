@@ -4,7 +4,7 @@ Name:
   {person.name},
 {eachlast}
   {person.name}
-{eachend}
+{/each}
 
 {if(persons)}
  Some text here

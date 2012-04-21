@@ -45,7 +45,7 @@ public class TemplateTokenizer {
                         tokenType = TokenType.IFNOT;
                     } else if (tokenText.equals("else")) {
                         tokenType = TokenType.ELSE;
-                    } else if (tokenText.equals("endif")) {
+                    } else if (tokenText.equals("/if")) {
                         tokenType = TokenType.ENDIF;
                     } else if (tokenText.equals("escape(html)")) {
                         tokenType = TokenType.ESCAPEHTML;
@@ -57,11 +57,11 @@ public class TemplateTokenizer {
                         tokenType = TokenType.ESCAPEXML;
                     } else if (tokenText.equals("escape(none)")) {
                         tokenType = TokenType.ESCAPENONE;
-                    } else if (tokenText.equals("escapeend")) {
+                    } else if (tokenText.equals("/escape")) {
                         tokenType = TokenType.ESCAPEEND;
-                    } else if (tokenText.equals("endif")) {
+                    } else if (tokenText.equals("/if")) {
                         tokenType = TokenType.ENDIF;
-                    } else if (tokenText.equals("eachend")) {
+                    } else if (tokenText.equals("/each")) {
                         tokenType = TokenType.EACHEND;
                     } else if (tokenText.equals("eachalt")) {
                         tokenType = TokenType.EACHALT;

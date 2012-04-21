@@ -63,7 +63,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateIf() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {if(person)}{person.name}{endif}");
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {if(person)}{person.name}{/if}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -76,7 +76,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateIfElse() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {if(person)}{person.name}{else}<empty>{endif}");
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {if(person)}{person.name}{else}<empty>{/if}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -89,7 +89,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateIfNot() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {ifnot(person)}<empty>{endif}");
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {ifnot(person)}<empty>{/if}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -102,7 +102,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateIfNotElse() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', EscapeMode.HTML, "Name: {ifnot(person)}<empty>{else}{person.name}{endif}");
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', EscapeMode.HTML, "Name: {ifnot(person)}<empty>{else}{person.name}{/if}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -115,7 +115,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateForEach() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {foreach(persons as person)}{person.name},\n{eachlast}{person.name}\n{eachend}");
+        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {each(persons as person)}{person.name},\n{eachlast}{person.name}\n{/each}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 

@@ -1,9 +1,9 @@
 Name:
 
-{foreach(persons as person)}
+{each(persons as person)}
   {person.name},
 {eachlast}
   {person.name}
-{eachxend}
+{/eachxend}
 
 For each with no end
