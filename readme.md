@@ -64,3 +64,5 @@ Here is the list:
 
 Your reference: somename
 ```
+
+For an overview of all tags see the [wiki](https://github.com/rnentjes/Very-simple-templates/wiki)
