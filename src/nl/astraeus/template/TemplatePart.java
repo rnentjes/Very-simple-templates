@@ -60,6 +60,5 @@ public abstract class TemplatePart {
         }
 
         return value;
-
     }
 }
