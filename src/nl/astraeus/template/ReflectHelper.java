@@ -49,7 +49,7 @@ public class ReflectHelper {
     }
 
     private int getFullNameHash(Object o, String name, Class... parameters) {
-        int result = o.hashCode();
+        int result = o.getClass().getName().hashCode();
 
         result *= 7;
         result += name.hashCode();
