@@ -7,18 +7,18 @@ Some text.
 
 Hello {name},
 
-{if(person.remark)}
+${if(person.remark)}
 Don't forget {person.remark}!
-{else}
+${else}
 No news at this time.
-{endif}
+${/if}
 
 Here is the list:
-{foreach(list as entry)}
-  {entry.name}   {entry.value}
-{endeach}
+${foreach(list as entry)}
+  ${entry.name}   ${entry.value}
+${/each}
 
-Your reference: {person.company.name}
+Your reference: ${person.company.name}
 ```
 
 Java:
@@ -27,7 +27,7 @@ Java:
 public class SimpleTamplateExample {
 
     public SimpleTamplateExample() {
-        SimpleTemplate st = SimpleTemplate.readTemplate('{', '}', new File("template.txt"));
+        SimpleTemplate st = SimpleTemplate.readTemplate("${", "}", new File("template.txt"));
 
         List<NameValueObject> list = new LinkedList<NameValueObject>();
 

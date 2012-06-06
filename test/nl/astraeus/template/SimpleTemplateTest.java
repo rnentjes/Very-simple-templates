@@ -30,7 +30,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateValue() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {name}");
+        SimpleTemplate st = SimpleTemplate.getTemplate("{", "}", "Name: {name}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -41,7 +41,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplatePlainValue() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {!name}");
+        SimpleTemplate st = SimpleTemplate.getTemplate("{", "}", "Name: {!name}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -52,7 +52,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateValue2() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {person.name}");
+        SimpleTemplate st = SimpleTemplate.getTemplate("{", "}", "Name: {person.name}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -63,7 +63,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateIf() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {if(person)}{person.name}{/if}");
+        SimpleTemplate st = SimpleTemplate.getTemplate("{", "}", "Name: {if(person)}{person.name}{/if}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -76,7 +76,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateIfElse() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {if(person)}{person.name}{else}<empty>{/if}");
+        SimpleTemplate st = SimpleTemplate.getTemplate("{", "}", "Name: {if(person)}{person.name}{else}<empty>{/if}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -89,7 +89,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateIfNot() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {ifnot(person)}<empty>{/if}");
+        SimpleTemplate st = SimpleTemplate.getTemplate("{", "}", "Name: {ifnot(person)}<empty>{/if}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -102,7 +102,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateIfNotElse() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', EscapeMode.HTML, "Name: {ifnot(person)}<empty>{else}{person.name}{/if}");
+        SimpleTemplate st = SimpleTemplate.getTemplate("{", "}", EscapeMode.HTML, "Name: {ifnot(person)}<empty>{else}{person.name}{/if}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -115,7 +115,7 @@ public class SimpleTemplateTest {
 
     @Test
     public void testTemplateForEach() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Name: {each(persons as person)}{person.name},\n{eachlast}{person.name}\n{/each}");
+        SimpleTemplate st = SimpleTemplate.getTemplate("{", "}", "Name: {each(persons as person)}{person.name},\n{eachlast}{person.name}\n{/each}");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -136,17 +136,22 @@ public class SimpleTemplateTest {
 
     @Test(expected = ParseException.class)
     public void testTemplateForEachError() throws IOException {
-        SimpleTemplate st = SimpleTemplate.readTemplate('{', '}', getClass().getResourceAsStream("testtemplate1.txt"));
+        SimpleTemplate st = SimpleTemplate.readTemplate("{", "}", getClass().getResourceAsStream("testtemplate1.txt"));
     }
 
     @Test(expected = ParseException.class)
     public void testTemplateIfError() throws IOException {
-        SimpleTemplate st = SimpleTemplate.readTemplate('{', '}', getClass().getResourceAsStream("testtemplate2.txt"));
+        SimpleTemplate st = SimpleTemplate.readTemplate("{", "}", getClass().getResourceAsStream("testtemplate2.txt"));
+    }
+
+    @Test
+    public void testTemplateStartEndDelimitor() throws IOException {
+        SimpleTemplate st = SimpleTemplate.readTemplate("${", "}", getClass().getResourceAsStream("testtemplate3.txt"));
     }
 
     @Test
     public void testTemplateBackslashEscape() {
-        SimpleTemplate st = SimpleTemplate.getTemplate('{', '}', "Escape: \\{ \\\\");
+        SimpleTemplate st = SimpleTemplate.getTemplate("{", "}", "Escape: \\{ \\\\");
 
         Assert.assertEquals("Escape: { \\", st.render(new HashMap<String, Object>()));
     }

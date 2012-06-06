@@ -17,22 +17,22 @@ public class SimpleTemplate {
     }
 
     public static SimpleTemplate getTemplate(String template) {
-        return getTemplate('@', template);
+        return getTemplate("@", template);
     }
 
-    public static SimpleTemplate getTemplate(char delimiter, String template) {
+    public static SimpleTemplate getTemplate(String delimiter, String template) {
         return getTemplate(delimiter, delimiter, EscapeMode.NONE, template);
     }
 
-    public static SimpleTemplate getTemplate(char delimiter, EscapeMode defaultEscapeMode, String template) {
+    public static SimpleTemplate getTemplate(String delimiter, EscapeMode defaultEscapeMode, String template) {
         return getTemplate(delimiter, delimiter, defaultEscapeMode, template);
     }
 
-    public static SimpleTemplate getTemplate(char startDelimiter, char endDelimiter, String template) {
+    public static SimpleTemplate getTemplate(String startDelimiter, String endDelimiter, String template) {
         return getTemplate(startDelimiter,  endDelimiter, EscapeMode.NONE, template);
     }
 
-    public static SimpleTemplate getTemplate(char startDelimiter, char endDelimiter, EscapeMode defaultEscapeMode, String template) {
+    public static SimpleTemplate getTemplate(String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, String template) {
         int hash = getHash(startDelimiter, endDelimiter, template);
 
         SimpleTemplate result = templateCache.get(hash);
@@ -47,14 +47,14 @@ public class SimpleTemplate {
     }
 
     public static SimpleTemplate getTemplate(File file) throws IOException {
-        return getTemplate('@', file);
+        return getTemplate("@", file);
     }
 
-    public static SimpleTemplate getTemplate(char delimiter, File file) throws IOException {
+    public static SimpleTemplate getTemplate(String delimiter, File file) throws IOException {
         return getTemplate(delimiter, delimiter, file);
     }
 
-    public static SimpleTemplate getTemplate(char startDelimiter, char endDelimiter, File file) throws IOException {
+    public static SimpleTemplate getTemplate(String startDelimiter, String endDelimiter, File file) throws IOException {
         SimpleTemplate result = null;
         InputStream in = null;
 
@@ -71,27 +71,27 @@ public class SimpleTemplate {
         return result;
     }
 
-    private static int getHash(char ch1, char ch2, String st) {
-        return ch1 * 7 + ch2 * 7 + st.hashCode();
+    private static int getHash(String ch1, String ch2, String st) {
+        return ch1.hashCode() * 7 + ch2.hashCode() * 7 + st.hashCode();
     }
 
     public static SimpleTemplate readTemplate(InputStream in) throws IOException {
-        return readTemplate('@', in);
+        return readTemplate("@", in);
     }
 
-    public static SimpleTemplate readTemplate(char delimiter, InputStream in) throws IOException {
+    public static SimpleTemplate readTemplate(String delimiter, InputStream in) throws IOException {
         return readTemplate(delimiter, delimiter, in);
     }
 
-    public static SimpleTemplate readTemplate(char delimiter, EscapeMode defaultEscapeMode, InputStream in) throws IOException {
+    public static SimpleTemplate readTemplate(String delimiter, EscapeMode defaultEscapeMode, InputStream in) throws IOException {
         return readTemplate(delimiter, delimiter, defaultEscapeMode, in);
     }
 
-    public static SimpleTemplate readTemplate(char startDelimiter, char endDelimiter, InputStream in) throws IOException {
+    public static SimpleTemplate readTemplate(String startDelimiter, String endDelimiter, InputStream in) throws IOException {
         return readTemplate(startDelimiter, endDelimiter, EscapeMode.NONE, in);
     }
 
-    public static SimpleTemplate readTemplate(char startDelimiter, char endDelimiter, EscapeMode defaultEscapeMode, InputStream in) throws IOException {
+    public static SimpleTemplate readTemplate(String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, InputStream in) throws IOException {
         String template = readInputStream(in);
 
         return getTemplate(startDelimiter, endDelimiter, defaultEscapeMode, template);
@@ -110,27 +110,27 @@ public class SimpleTemplate {
     }
 
     private int hash;
-    private char startDelimiter, endDelimiter;
+    private String startDelimiter, endDelimiter;
     private EscapeMode defaultEscapeMode = EscapeMode.NONE;
     private List<TemplatePart> parts = new ArrayList<TemplatePart>();
 
     public SimpleTemplate(String template) {
-        this('@', template);
+        this("@", template);
     }
 
     public SimpleTemplate(EscapeMode defaultEscapeMode, String template) {
-        this('@', defaultEscapeMode, template);
+        this("@", defaultEscapeMode, template);
     }
 
-    public SimpleTemplate(char delimiter, String template) {
+    public SimpleTemplate(String delimiter, String template) {
         this(delimiter, delimiter, EscapeMode.NONE, template);
     }
 
-    public SimpleTemplate(char delimiter, EscapeMode defaultEscapeMode, String template) {
+    public SimpleTemplate(String delimiter, EscapeMode defaultEscapeMode, String template) {
         this(delimiter, delimiter, defaultEscapeMode, template);
     }
 
-    public SimpleTemplate(char startDelimiter, char endDelimiter, EscapeMode defaultEscapeMode, String template) {
+    public SimpleTemplate(String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, String template) {
         this.startDelimiter = startDelimiter;
         this.endDelimiter = endDelimiter;
         this.defaultEscapeMode = defaultEscapeMode;

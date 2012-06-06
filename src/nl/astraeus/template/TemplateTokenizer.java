@@ -13,6 +13,10 @@ public class TemplateTokenizer {
     private List<TemplateToken> tokens;
 
     public TemplateTokenizer(char startDelimiter, char endDelimiter, String template) {
+        tokens = parseTemplateIntoTokens(String.valueOf(startDelimiter), String.valueOf(endDelimiter), template);
+    }
+
+    public TemplateTokenizer(String startDelimiter, String endDelimiter, String template) {
         tokens = parseTemplateIntoTokens(startDelimiter, endDelimiter, template);
     }
 
@@ -20,22 +24,49 @@ public class TemplateTokenizer {
         return tokens;
     }
 
-    private List<TemplateToken> parseTemplateIntoTokens(char startDelimiter, char endDelimiter, String template) {
+    private List<TemplateToken> parseTemplateIntoTokens(String startDelimiter, String endDelimiter, String template) {
         List<TemplateToken> tokens = new ArrayList<TemplateToken>();
         StringBuilder current = new StringBuilder();
 
+        assert !startDelimiter.contains("\n");
+        assert !startDelimiter.contains("\\");
+
+        assert !endDelimiter.contains("\n");
+        assert !endDelimiter.contains("\\");
+
         boolean escape = false;
         boolean command = false;
+        boolean skip = false;
         int line = 1;
 
+        int startCounter = 0;
+        int endCounter = 0;
+
         for (int index = 0; index < template.length(); index++) {
+            skip = false;
             char ch = template.charAt(index);
 
-            if (ch == startDelimiter || ch == endDelimiter) {
-                if (escape) {
-                    current.append(ch);
-                    escape = false;
-                } else if (ch == endDelimiter && command) {
+            if (!escape && startDelimiter.charAt(startCounter) == ch) {
+                startCounter++;
+
+                if (startCounter == startDelimiter.length()) {
+                    // found command start
+                    command = true;
+                    tokens.add(new TemplateToken(TokenType.STRING, current.toString(), line));
+                    current =  new StringBuilder();
+                    startCounter = 0;
+                    skip = true;
+                }
+            } else if (startCounter > 0) {
+                current.append(startDelimiter.substring(0, startCounter));
+
+                startCounter = 0;
+            }
+
+            if (!escape && endDelimiter.charAt(endCounter) == ch && command) {
+                endCounter++;
+
+                if (endCounter == endDelimiter.length()) {
                     TokenType tokenType;
                     String tokenText = current.toString();
 
@@ -85,15 +116,21 @@ public class TemplateTokenizer {
                     tokens.add(new TemplateToken(tokenType, tokenText, line));
                     command = false;
                     current =  new StringBuilder();
-                } else if (ch == startDelimiter) {
-                    command = true;
-                    tokens.add(new TemplateToken(TokenType.STRING, current.toString(), line));
-                    current =  new StringBuilder();
-                } else {
-                    throw new ParseException("Unexpected delimiter '"+ch+"'", line);
+                    endCounter = 0;
+                    skip = true;
                 }
+            } else if (endCounter > 0) {
+                current.append(endDelimiter.substring(0, endCounter));
 
-            } else {
+                endCounter = 0;
+            }
+
+            if (escape) {
+                current.append(ch);
+                startCounter = 0;
+                endCounter = 0;
+                escape = false;
+            } else if (!command && !skip) {
                 switch(ch) {
                     case '\\':
                         if (escape) {
@@ -111,12 +148,15 @@ public class TemplateTokenizer {
                         current.append(ch);
                         break;
                 }
+            } else if (!skip) {
+                current.append(ch);
             }
         }
 
         if (current.length() > 0) {
             tokens.add(new TemplateToken(TokenType.STRING, current.toString(), line));
         }
+
         return tokens;
     }
 }
