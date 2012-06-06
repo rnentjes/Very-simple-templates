@@ -134,6 +134,19 @@ public class SimpleTemplateTest {
         Assert.assertEquals("Name: name1,\nname2\n", st.render(model));
     }
 
+    @Test
+    public void testTemplateIfNotElseDelimiter() {
+        SimpleTemplate st = SimpleTemplate.getTemplate("${", "}", EscapeMode.HTML, "Name: ${ifnot(person)}<empty>${else}${person.name}${/if}");
+
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        Assert.assertEquals("Name: <empty>", st.render(model));
+
+        model.put("person", new Person("person <> name"));
+
+        Assert.assertEquals("Name: person &lt;&gt; name", st.render(model));
+    }
+
     @Test(expected = ParseException.class)
     public void testTemplateForEachError() throws IOException {
         SimpleTemplate st = SimpleTemplate.readTemplate("{", "}", getClass().getResourceAsStream("testtemplate1.txt"));
