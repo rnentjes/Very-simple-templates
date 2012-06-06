@@ -5,7 +5,7 @@ Template:
 ```text
 Some text.
 
-Hello {name},
+Hello ${name},
 
 ${if(person.remark)}
 Don't forget {person.remark}!
@@ -24,9 +24,9 @@ Your reference: ${person.company.name}
 Java:
 
 ```java
-public class SimpleTamplateExample {
+public class SimpleTemplateExample {
 
-    public SimpleTamplateExample() {
+    public SimpleTemplateExample() {
         SimpleTemplate st = SimpleTemplate.readTemplate("${", "}", new File("template.txt"));
 
         List<NameValueObject> list = new LinkedList<NameValueObject>();
