@@ -14,7 +14,10 @@ No news at this time.
 ${/if}
 
 Here is the list:
-${foreach(list as entry)}
+${each(list as entry)}
+  ${entry.name}   ${entry.value}
+${eachlast}
+-------------------------------------
   ${entry.name}   ${entry.value}
 ${/each}
 
@@ -33,6 +36,7 @@ public class SimpleTemplateExample {
 
         list.add(new NameValueObject("John", "John was second!");
         list.add(new NameValueObject("Peter", "Peter lost everything.");
+        list.add(new NameValueObject("James", "Who is James?");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -60,6 +64,8 @@ Here is the list:
 
   John   John was second!
   Peter   Peter lost everything.
+-------------------------------------
+  James   Who is James?
 
 
 Your reference: somename
