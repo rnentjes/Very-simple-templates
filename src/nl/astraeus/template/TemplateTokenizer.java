@@ -47,7 +47,7 @@ public class TemplateTokenizer {
             char ch = template.charAt(index);
 
             if (!escape) {
-                if (startDelimiter.charAt(startCounter) == ch) {
+                if (!command && startDelimiter.charAt(startCounter) == ch) {
                     startCounter++;
                     skip = true;
 
@@ -64,7 +64,7 @@ public class TemplateTokenizer {
                     startCounter = 0;
                 }
 
-                if (endDelimiter.charAt(endCounter) == ch && command) {
+                if (!skip && endDelimiter.charAt(endCounter) == ch && command) {
                     endCounter++;
                     skip = true;
 

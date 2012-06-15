@@ -40,6 +40,17 @@ public class SimpleTemplateTest {
     }
 
     @Test
+    public void testTemplateValueSameDelimiters() {
+        SimpleTemplate st = SimpleTemplate.getTemplate("$", "$", "Name: $name$");
+
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        model.put("name", "person name");
+
+        Assert.assertEquals("Name: person name", st.render(model));
+    }
+
+    @Test
     public void testTemplatePlainValue() {
         SimpleTemplate st = SimpleTemplate.getTemplate("{", "}", "Name: {!name}");
 
