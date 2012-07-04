@@ -1,6 +1,9 @@
 package nl.astraeus.template;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: rnentjes
@@ -9,10 +12,10 @@ import java.util.*;
  */
 public class ForEachPart extends TemplatePart {
 
-    private List<TemplatePart> parts;
-    private List<TemplatePart> altParts;
-    private List<TemplatePart> firstParts;
-    private List<TemplatePart> lastParts;
+    private TemplatePart [] parts;
+    private TemplatePart [] altParts;
+    private TemplatePart [] firstParts;
+    private TemplatePart [] lastParts;
 
     private static enum CurrentPart {
         MAIN,
@@ -44,35 +47,43 @@ public class ForEachPart extends TemplatePart {
         switch(currentPart) {
             case MAIN:
                 if (this.parts != null) {
-                    this.parts.addAll(parts);
+                    //this.parts.addAll(parts);
+                    TemplatePart [] orig = this.parts;
+                    this.parts = new TemplatePart[orig.length+parts.size()];
+                    int index = 0;
+                    for (TemplatePart part : orig) {
+                        this.parts[index++] = part;
+                    }
+                    for (TemplatePart part : parts) {
+                        this.parts[index++] = part;
+                    }
                 } else {
-                    this.parts = parts;
+                    this.parts = parts.toArray(new TemplatePart[parts.size()]);
                 }
                 break;
             case ALT:
                 if (this.altParts != null) {
                     throw new ParseException("Encountered double alt part in foreach", getLine());
                 } else {
-                    this.altParts = parts;
+                    this.altParts = parts.toArray(new TemplatePart[parts.size()]);
                 }
                 break;
             case FIRST:
                 if (this.firstParts != null) {
                     throw new ParseException("Encountered double first part in foreach", getLine());
                 } else {
-                    this.firstParts = parts;
+                    this.firstParts = parts.toArray(new TemplatePart[parts.size()]);
                 }
                 break;
             case LAST:
                 if (this.lastParts != null) {
                     throw new ParseException("Encountered double last part in foreach", getLine());
                 } else {
-                    this.lastParts = parts;
+                    this.lastParts = parts.toArray(new TemplatePart[parts.size()]);
                 }
                 break;
             default:
                 throw new ParseException("Unknown current part in foreach!", getLine());
-
         }
     }
 

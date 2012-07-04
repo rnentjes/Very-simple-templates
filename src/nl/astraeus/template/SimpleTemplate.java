@@ -112,7 +112,7 @@ public class SimpleTemplate {
     private int hash;
     private String startDelimiter, endDelimiter;
     private EscapeMode defaultEscapeMode = EscapeMode.NONE;
-    private List<TemplatePart> parts = new ArrayList<TemplatePart>();
+    private TemplatePart [] parts;
 
     public SimpleTemplate(String template) {
         this("@", template);
@@ -157,7 +157,7 @@ public class SimpleTemplate {
         }
     }
 
-    public List<TemplatePart> getParts() {
+    public TemplatePart [] getParts() {
         return parts;
     }
 
@@ -276,7 +276,9 @@ public class SimpleTemplate {
             }
         }
 
-        parts = stack.pop();
+        List<TemplatePart> tmpParts = stack.pop();
+
+        parts = tmpParts.toArray(new TemplatePart[tmpParts.size()]);
 
         if (stack.size() > 0) {
             if (currentForEach.size() > 0) {

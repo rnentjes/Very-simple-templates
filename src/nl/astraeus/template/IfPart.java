@@ -1,6 +1,5 @@
 package nl.astraeus.template;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +11,8 @@ import java.util.Map;
 public class IfPart extends TemplatePart {
 
     protected BooleanCondition ifCondition;
-    private List<TemplatePart> ifParts;
-    private List<TemplatePart> elseParts;
+    private TemplatePart [] ifParts;
+    private TemplatePart [] elseParts;
     private boolean hasElse;
     private String conditionText;
 
@@ -22,20 +21,20 @@ public class IfPart extends TemplatePart {
 
         this.conditionText = ifCondition;
         this.ifCondition = new BooleanCondition(ifCondition);
-        this.ifParts = new ArrayList<TemplatePart>();
-        this.elseParts = new ArrayList<TemplatePart>();
+        this.ifParts = new TemplatePart [0];
+        this.elseParts = new TemplatePart [0];
     }
 
     public void setIfParts(List<TemplatePart> ifParts) {
-        this.ifParts = ifParts;
+        this.ifParts = ifParts.toArray(new TemplatePart[ifParts.size()]);
     }
 
-    public List<TemplatePart> getIfParts() {
+    public TemplatePart [] getIfParts() {
         return ifParts;
     }
 
     public void setElseParts(List<TemplatePart> elseParts) {
-        this.elseParts = elseParts;
+        this.elseParts = elseParts.toArray(new TemplatePart[elseParts.size()]);
     }
 
     public boolean isHasElse() {

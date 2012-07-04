@@ -1,6 +1,5 @@
 package nl.astraeus.template;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,7 +21,7 @@ public abstract class TemplatePart {
 
     public abstract void render(Map<String, Object> model, StringBuilder result);
 
-    protected void renderParts(List<TemplatePart> parts, Map<String, Object> model, StringBuilder result) {
+    protected void renderParts(TemplatePart [] parts, Map<String, Object> model, StringBuilder result) {
         for (TemplatePart part : parts) {
             part.render(model, result);
         }
