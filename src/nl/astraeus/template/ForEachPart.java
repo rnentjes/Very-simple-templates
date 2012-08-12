@@ -120,6 +120,10 @@ public class ForEachPart extends TemplatePart {
                 Object object = it.next();
                 tmpModel.put(parameterName, object);
 
+                tmpModel.put("eachfirst", first);
+                tmpModel.put("eachalt", alt);
+                tmpModel.put("eachlast", !it.hasNext());
+
                 if (first && firstParts != null) {
                     renderParts(firstParts, tmpModel,result);
                 } else if (!it.hasNext() && lastParts != null) {
