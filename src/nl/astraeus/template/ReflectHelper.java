@@ -67,18 +67,33 @@ public class ReflectHelper {
         assert object != null : "Can't find get method on null object!";
         assert field != null : "Can't find get method with null field!";
 
-        Integer nameHash = getFullNameHash(object, getGetterFieldName(field));
+        String getterName = getGetterFieldName(field);
+
+        Integer nameHash = getFullNameHash(object, getterName);
 
         Method method = methodCache.get(nameHash);
 
         if (method == null) {
-            String getterName = getGetterFieldName(field);
+            method = object.getClass().getMethod(getterName, new Class[0]);
 
-            if (getterName == null) {
-                return null;
-            }
+            methodCache.put(nameHash, method);
+        }
 
-            method = object.getClass().getMethod(getGetterFieldName(field), new Class[0]);
+        return method;
+    }
+
+    public Method findIsMethod(Object object, String field) throws NoSuchMethodException {
+        assert object != null : "Can't find get method on null object!";
+        assert field != null : "Can't find get method with null field!";
+
+        String methodName = getIsFieldName(field);
+
+        Integer nameHash = getFullNameHash(object, methodName);
+
+        Method method = methodCache.get(nameHash);
+
+        if (method == null) {
+            method = object.getClass().getMethod(methodName, new Class[0]);
 
             methodCache.put(nameHash, method);
         }
@@ -199,6 +214,23 @@ public class ReflectHelper {
         return result.toString();
     }
 
+    public String getIsFieldName(String fieldName) {
+        StringBuilder result = new StringBuilder();
+        int fieldLength = fieldName.length();
+
+        if (fieldLength == 0) {
+            return null;
+        }
+
+        result.append("is");
+        result.append(fieldName.substring(0, 1).toUpperCase());
+
+        if (fieldLength > 1) {
+            result.append(fieldName.substring(1));
+        }
+
+        return result.toString();
+    }
 
     public Object getMethodValue(Object model, String... fields) {
         return getMethodValue(model, 0, fields);
@@ -222,7 +254,13 @@ public class ReflectHelper {
                         result = entry.getValue();
                     }
                 } else {
-                    Method method = findGetMethod(model, fields[skip]);
+                    Method method = null;
+
+                    try {
+                        method = findGetMethod(model, fields[skip]);
+                    } catch (NoSuchMethodException e) {
+                        method = findIsMethod(model, fields[skip]);
+                    }
 
                     if (method == null) {
                         throw new IllegalStateException("Can't find method " + fields[skip] + " in model " + model + ".");
@@ -232,7 +270,7 @@ public class ReflectHelper {
                 }
             }
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalStateException("Can't find method " + fields[skip] + " in model " + model + ".");
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(e);
         } catch (InvocationTargetException e) {
