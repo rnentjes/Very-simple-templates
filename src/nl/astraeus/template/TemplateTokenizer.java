@@ -108,6 +108,8 @@ public class TemplateTokenizer {
                             tokenType = TokenType.EACH;
                         } else if (tokenText.startsWith("foreach(") && tokenText.endsWith(")")) {
                             tokenType = TokenType.EACH;
+                        } else if (tokenText.startsWith("include(") && tokenText.endsWith(")")) {
+                            tokenType = TokenType.INCLUDE;
                         } else if (tokenText.startsWith("!")) {
                             tokenType = TokenType.PLAINVALUE;
                             tokenText = tokenText.substring(1);

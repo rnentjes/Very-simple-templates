@@ -1,5 +1,7 @@
 package nl.astraeus.template;
 
+import nl.astraeus.template.cache.TemplateCache;
+
 import java.io.*;
 import java.util.*;
 
@@ -30,6 +32,20 @@ public class SimpleTemplate {
 
     public static SimpleTemplate getTemplate(String startDelimiter, String endDelimiter, String template) {
         return getTemplate(startDelimiter,  endDelimiter, EscapeMode.NONE, template);
+    }
+
+    public static SimpleTemplate getTemplate(Class cls, String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, String template) {
+        int hash = getHash(startDelimiter, endDelimiter, template);
+
+        SimpleTemplate result = templateCache.get(hash);
+
+        if (result == null) {
+            result = new SimpleTemplate(cls, startDelimiter, endDelimiter, defaultEscapeMode, template);
+
+            templateCache.put(hash, result);
+        }
+
+        return result;
     }
 
     public static SimpleTemplate getTemplate(String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, String template) {
@@ -97,6 +113,12 @@ public class SimpleTemplate {
         return getTemplate(startDelimiter, endDelimiter, defaultEscapeMode, template);
     }
 
+    public static SimpleTemplate readTemplate(Class cls, String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, InputStream in) throws IOException {
+        String template = readInputStream(in);
+
+        return getTemplate(cls, startDelimiter, endDelimiter, defaultEscapeMode, template);
+    }
+
     private static String readInputStream(InputStream in) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuilder buffer = new StringBuilder();
@@ -113,6 +135,7 @@ public class SimpleTemplate {
     private String startDelimiter, endDelimiter;
     private EscapeMode defaultEscapeMode = EscapeMode.NONE;
     private TemplatePart [] parts;
+    private Class resourceLocation = null;
 
     public SimpleTemplate(String template) {
         this("@", template);
@@ -131,12 +154,25 @@ public class SimpleTemplate {
     }
 
     public SimpleTemplate(String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, String template) {
+        this(null, startDelimiter, endDelimiter, defaultEscapeMode, template);
+    }
+
+    public SimpleTemplate(Class cls, String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, String template) {
+        this.resourceLocation = cls;
         this.startDelimiter = startDelimiter;
         this.endDelimiter = endDelimiter;
         this.defaultEscapeMode = defaultEscapeMode;
         this.hash = getHash(startDelimiter, endDelimiter, template);
 
         parseTemplate(template);
+    }
+
+    public Class getResourceLocation() {
+        return resourceLocation;
+    }
+
+    public void setResourceLocation(Class resourceLocation) {
+        this.resourceLocation = resourceLocation;
     }
 
     public int getHash() {
@@ -218,6 +254,24 @@ public class SimpleTemplate {
                     break;
                 case PLAINVALUE:
                     stack.peek().add(new PlainValuePart(token.getLine(), token.getValue()));
+                    break;
+                case INCLUDE:
+                    String templateName = token.getValue().substring("include(".length());
+                    templateName = templateName.substring(0, templateName.length()-1);
+
+                    SimpleTemplate tpl = null;
+
+                    if (resourceLocation != null) {
+                        tpl = TemplateCache.getSimpleTemplate(resourceLocation, templateName);
+                    } else {
+                        try {
+                            tpl = getTemplate(startDelimiter, endDelimiter, new File(templateName));
+                        } catch (IOException e) {
+                            throw new IllegalStateException(e.getMessage(), e);
+                        }
+                    }
+
+                    stack.peek().add(new IncludePart(token.getLine(), tpl));
                     break;
                 case IF:
                     stack.push(new ArrayList<TemplatePart>());
@@ -301,7 +355,7 @@ public class SimpleTemplate {
 
                     throw new ParseException("Template not parsed completely, last remaining part: "+part, part.getLine());
                 } else {
-                    throw new ParseException("Template not parsed completely, coulnd't retrieve last remaining part (giving up)", -1);
+                    throw new ParseException("Template not parsed completely, couldn't retrieve last remaining part (giving up)", -1);
                 }
             }
         }

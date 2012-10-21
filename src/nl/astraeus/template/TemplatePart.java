@@ -42,7 +42,11 @@ public abstract class TemplatePart {
                 value = model.get(parts[index]);
 
                 while(value != null && parts.length > ++index) {
-                    value = ReflectHelper.get().getMethodValue(value, parts[index]);
+                    if (value instanceof Map) {
+                        value = ((Map)value).get(parts[index]);
+                    } else {
+                        value = ReflectHelper.get().getMethodValue(value, parts[index]);
+                    }
                 }
             }
         } catch (IllegalArgumentException e) {

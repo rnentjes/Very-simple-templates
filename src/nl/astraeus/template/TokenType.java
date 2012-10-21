@@ -24,5 +24,6 @@ public enum TokenType {
     ESCAPEHTMLBR,
     ESCAPEJS,
     ESCAPEXML,
-    ESCAPEEND
+    ESCAPEEND,
+    INCLUDE
 }
