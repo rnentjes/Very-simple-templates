@@ -3,6 +3,7 @@ package nl.astraeus.template;
 import nl.astraeus.template.cache.TemplateCache;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -120,15 +121,16 @@ public class SimpleTemplate {
     }
 
     private static String readInputStream(InputStream in) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder buffer = new StringBuilder();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        while(reader.ready()) {
-            buffer.append(reader.readLine());
-            buffer.append("\n");
+        byte [] buffer = new byte[8196];
+        int nr = 0;
+
+        while((nr = in.read(buffer)) > 0) {
+            out.write(buffer, 0, nr);
         }
 
-        return buffer.toString();
+        return new String(out.toByteArray(), Charset.forName("UTF-8"));
     }
 
     private int hash;
