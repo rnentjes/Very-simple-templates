@@ -133,14 +133,14 @@ public class SimpleTemplate {
     public SimpleTemplate(String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, File file) {
         hash = getHash(startDelimiter, endDelimiter, file);
 
-        parser = new TemplateParser(startDelimiter, endDelimiter,  defaultEscapeMode, file);
+        parser = new TemplateParser(this, startDelimiter, endDelimiter,  defaultEscapeMode, file);
     }
 
     public SimpleTemplate(String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, Class resourceClass, String resourceLocation) {
 
         hash = getHash(startDelimiter, endDelimiter, resourceClass, resourceLocation);
 
-        parser = new TemplateParser(startDelimiter, endDelimiter,  defaultEscapeMode, resourceClass, resourceLocation);
+        parser = new TemplateParser(this, startDelimiter, endDelimiter,  defaultEscapeMode, resourceClass, resourceLocation);
     }
 
     public SimpleTemplate(String template) {
@@ -162,7 +162,7 @@ public class SimpleTemplate {
     public SimpleTemplate(String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, String template) {
         this.hash = getHash(startDelimiter, endDelimiter, template);
 
-        parser = new TemplateParser(startDelimiter, endDelimiter,  defaultEscapeMode, template);
+        parser = new TemplateParser(this, startDelimiter, endDelimiter,  defaultEscapeMode, template);
     }
 
     private void setParent(SimpleTemplate template) {
