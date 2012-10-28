@@ -25,5 +25,8 @@ public enum TokenType {
     ESCAPEJS,
     ESCAPEXML,
     ESCAPEEND,
-    INCLUDE
+    INCLUDE,
+    DEFINE,
+    ENDDEFINE,
+    CALL
 }

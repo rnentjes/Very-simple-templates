@@ -1,5 +1,6 @@
 package nl.astraeus.template;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -11,6 +12,16 @@ public class IncludePart extends TemplatePart {
 
     private String [] parts;
     private SimpleTemplate template;
+    private String [] modelParts = null;
+    private String parameterName = null;
+
+    public IncludePart(int line, SimpleTemplate template, String modelObject, String parameterName) {
+        super(line);
+
+        this.template = template;
+        this.modelParts = modelObject.split("\\.");
+        this.parameterName = parameterName;
+    }
 
     public IncludePart(int line, SimpleTemplate template) {
         super(line);
@@ -20,6 +31,16 @@ public class IncludePart extends TemplatePart {
 
     @Override
     public void render(Map<String, Object> model, StringBuilder result) {
-        template.render(model, result);
+
+        if (modelParts != null && parameterName != null) {
+            Object value = getValueFromModel(model, modelParts);
+
+            Map<String, Object> tmpModel = new HashMap<String, Object>();
+            tmpModel.put(parameterName, value);
+
+            template.render(tmpModel, result);
+        } else {
+            template.render(model, result);
+        }
     }
 }
