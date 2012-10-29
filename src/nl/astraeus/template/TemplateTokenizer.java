@@ -110,6 +110,12 @@ public class TemplateTokenizer {
                             tokenType = TokenType.EACH;
                         } else if (tokenText.startsWith("include(") && tokenText.endsWith(")")) {
                             tokenType = TokenType.INCLUDE;
+                        } else if (tokenText.startsWith("define(") && tokenText.endsWith(")")) {
+                            tokenType = TokenType.DEFINE;
+                        } else if (tokenText.startsWith("/define")) {
+                            tokenType = TokenType.ENDDEFINE;
+                        } else if (tokenText.startsWith("call(") && tokenText.endsWith(")")) {
+                            tokenType = TokenType.CALL;
                         } else if (tokenText.startsWith("!")) {
                             tokenType = TokenType.PLAINVALUE;
                             tokenText = tokenText.substring(1);

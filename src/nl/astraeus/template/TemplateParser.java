@@ -130,6 +130,7 @@ public class TemplateParser {
         Stack<List<TemplatePart>> stack = new Stack<List<TemplatePart>>();
         stack.push(new ArrayList<TemplatePart>());
         Stack<IfPart> currentIfPart = new Stack<IfPart>();
+        Stack<DefinePart> currentDefinePart = new Stack<DefinePart>();
         Stack<ForEachPart> currentForEach = new Stack<ForEachPart>();
         Stack<EscapeModeInfo> currentEscapeMode = new Stack<EscapeModeInfo>();
         currentEscapeMode.push(new EscapeModeInfo(defaultEscapeMode, -1));
@@ -202,21 +203,36 @@ public class TemplateParser {
                     String [] bothParts = getParameterFromCommand(token.getValue()).split("\\|");
                     String [] variableParts = new String[0];
 
-
                     if (bothParts.length != 2) {
+                        throw new ParseException("Wrong number of arguments for define", token.getLine());
                     } else {
                         String variableName = bothParts[0].trim();
 
                         variableParts = bothParts[1].split("\\,");
 
-                        //DefinePart define = new DefinePart(token.getLine(), simpleTemplate, variableName, variableParts);
+                        stack.push(new ArrayList<TemplatePart>());
 
-                        //stack.peek().add(define);
+                        currentDefinePart.push(new DefinePart(token.getLine(), simpleTemplate, variableName, variableParts));
                     }
                     break;
                 case ENDDEFINE:
+                    currentDefinePart.peek().setParts(stack.pop());
+
+                    stack.peek().add(currentDefinePart.pop());
                     break;
                 case CALL:
+                    String [] bothParamParts = getParameterFromCommand(token.getValue()).split("\\|");
+                    String [] varParts = new String[0];
+
+                    if (bothParamParts.length != 2) {
+                        throw new ParseException("Wrong number of arguments for define", token.getLine());
+                    } else {
+                        String variableName = bothParamParts[0].trim();
+
+                        varParts = bothParamParts[1].split("\\,");
+
+                        stack.peek().add(new CallPart(token.getLine(), simpleTemplate, variableName, varParts));
+                    }
                     break;
                 case IF:
                     stack.push(new ArrayList<TemplatePart>());

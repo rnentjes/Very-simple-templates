@@ -1,5 +1,6 @@
 package nl.astraeus.template;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,17 +11,25 @@ import java.util.Map;
 public class DefinePart extends TemplatePart {
 
     private SimpleTemplate owner;
-    private SimpleTemplate template;
+    private TemplatePart [] parts;
     private String name;
     private String [] variables;
 
-    public DefinePart(int line, SimpleTemplate owner, SimpleTemplate template, String name, String [] variables) {
+    public DefinePart(int line, SimpleTemplate owner, String name, String [] variables) {
         super(line);
 
         this.owner = owner;
-        this.template = template;
+        this.parts = new TemplatePart[0];
         this.name = name;
-        this.variables = variables;
+        this.variables = new String[variables.length];
+
+        for (int index = 0; index < variables.length; index++) {
+            this.variables[index] = variables[index].trim();
+        }
+    }
+
+    public void setParts(List<TemplatePart> parts) {
+        this.parts = parts.toArray(new TemplatePart[parts.size()]);
     }
 
     @Override
@@ -29,7 +38,9 @@ public class DefinePart extends TemplatePart {
     }
 
     protected void renderCall(Map<String, Object> model, StringBuilder result) {
-        template.render(model, result);
+        for (TemplatePart part : parts) {
+            part.render(model, result);
+        }
     }
 
     public String[] getVariables() {

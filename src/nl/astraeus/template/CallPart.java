@@ -19,7 +19,11 @@ public class CallPart extends TemplatePart {
 
         this.owner = owner;
         this.name = name;
-        this.variables = variables;
+        this.variables = new String[variables.length];
+
+        for (int index = 0; index < variables.length; index++) {
+            this.variables[index] = variables[index].trim();
+        }
     }
 
     @Override
