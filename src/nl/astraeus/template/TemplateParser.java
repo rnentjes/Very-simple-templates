@@ -4,9 +4,7 @@ import nl.astraeus.template.cache.TemplateCache;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * User: rnentjes
@@ -24,6 +22,8 @@ public class TemplateParser {
     private Class resourceClass = null;
     private String resourceLocation = null;
     private SimpleTemplate simpleTemplate;
+
+    private static Map<String, DefinePart> defines = new HashMap<String, DefinePart>();
 
     public TemplateParser(SimpleTemplate simpleTemplate, String startDelimiter, String endDelimiter, EscapeMode defaultEscapeMode, String template) {
         this.simpleTemplate = simpleTemplate;
@@ -218,7 +218,7 @@ public class TemplateParser {
                 case ENDDEFINE:
                     currentDefinePart.peek().setParts(stack.pop());
 
-                    stack.peek().add(currentDefinePart.pop());
+                    defines.put(currentDefinePart.peek().getName(), currentDefinePart.pop());
                     break;
                 case CALL:
                     String [] bothParamParts = getParameterFromCommand(token.getValue()).split("\\|");
@@ -230,8 +230,13 @@ public class TemplateParser {
                         String variableName = bothParamParts[0].trim();
 
                         varParts = bothParamParts[1].split("\\,");
+                        DefinePart define = defines.get(variableName);
 
-                        stack.peek().add(new CallPart(token.getLine(), simpleTemplate, variableName, varParts));
+                        if (define == null) {
+                            throw new ParseException("No define for call to "+variableName, token.getLine());
+                        }
+
+                        stack.peek().add(new CallPart(token.getLine(), define, variableName, varParts));
                     }
                     break;
                 case IF:

@@ -34,10 +34,6 @@ public class DefinePart extends TemplatePart {
 
     @Override
     public void render(Map<String, Object> model, StringBuilder result) {
-        owner.addDefine(name, this);
-    }
-
-    protected void renderCall(Map<String, Object> model, StringBuilder result) {
         for (TemplatePart part : parts) {
             part.render(model, result);
         }
@@ -45,5 +41,9 @@ public class DefinePart extends TemplatePart {
 
     public String[] getVariables() {
         return variables;
+    }
+
+    public String getName() {
+        return name;
     }
 }

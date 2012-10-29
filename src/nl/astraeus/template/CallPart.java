@@ -10,14 +10,14 @@ import java.util.Map;
  */
 public class CallPart extends TemplatePart {
 
-    private SimpleTemplate owner;
+    private DefinePart define;
     private String name;
     private String [] variables;
 
-    public CallPart(int line, SimpleTemplate owner, String name, String[] variables) {
+    public CallPart(int line, DefinePart define, String name, String[] variables) {
         super(line);
 
-        this.owner = owner;
+        this.define = define;
         this.name = name;
         this.variables = new String[variables.length];
 
@@ -28,8 +28,6 @@ public class CallPart extends TemplatePart {
 
     @Override
     public void render(Map<String, Object> model, StringBuilder result) {
-        DefinePart define = owner.getDefine(name);
-
         String [] defineVariables = define.getVariables();
 
         if (defineVariables.length != variables.length) {
@@ -50,6 +48,6 @@ public class CallPart extends TemplatePart {
             tmpModel.put(defineVariables[index], value);
         }
 
-        define.renderCall(tmpModel, result);
+        define.render(tmpModel, result);
     }
 }

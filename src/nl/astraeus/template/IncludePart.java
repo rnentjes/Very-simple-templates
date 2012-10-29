@@ -10,7 +10,6 @@ import java.util.Map;
  */
 public class IncludePart extends TemplatePart {
 
-    private String [] parts;
     private SimpleTemplate template;
     private String [] modelParts = null;
     private String parameterName = null;
