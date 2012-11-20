@@ -37,6 +37,8 @@ public class TemplateCache {
 
             if (result == null || developmentMode) {
                 result = new SimpleTemplate("${","}", EscapeMode.HTML, file);
+
+                templateCache.put(cacheKey, result);
             }
 
             return result;
@@ -52,6 +54,8 @@ public class TemplateCache {
 
         if (result == null || developmentMode) {
             result = new SimpleTemplate("${","}", EscapeMode.HTML, cls, name);
+
+            templateCache.put(cacheKey, result);
         }
 
         return result;
