@@ -116,6 +116,14 @@ public class TemplateTokenizer {
                             tokenType = TokenType.ENDDEFINE;
                         } else if (tokenText.startsWith("call(") && tokenText.endsWith(")")) {
                             tokenType = TokenType.CALL;
+                        } else if (tokenText.startsWith("date(") && tokenText.endsWith(")")) {
+                            tokenType = TokenType.DATE;
+                        } else if (tokenText.startsWith("datetime(") && tokenText.endsWith(")")) {
+                            tokenType = TokenType.DATETIME;
+                        } else if (tokenText.startsWith("time(") && tokenText.endsWith(")")) {
+                            tokenType = TokenType.TIME;
+                        } else if (tokenText.startsWith("timestamp(") && tokenText.endsWith(")")) {
+                            tokenType = TokenType.TIMESTAMP;
                         } else if (tokenText.startsWith("!")) {
                             tokenType = TokenType.PLAINVALUE;
                             tokenText = tokenText.substring(1);

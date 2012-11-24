@@ -28,5 +28,9 @@ public enum TokenType {
     INCLUDE,
     DEFINE,
     ENDDEFINE,
-    CALL
+    CALL,
+    DATE,
+    DATETIME,
+    TIME,
+    TIMESTAMP
 }

@@ -164,6 +164,9 @@ public class TemplateParser {
                 case PLAINVALUE:
                     stack.peek().add(new PlainValuePart(token.getLine(), token.getValue()));
                     break;
+                case DATE:
+                    stack.peek().add(new DateValuePart(currentEscapeMode.peek().getMode(), token.getLine(), token.getValue()));
+                    break;
                 case INCLUDE:
                     String [] incParts = getParameterFromCommand(token.getValue()).split("\\,");
                     String templateName = null;
