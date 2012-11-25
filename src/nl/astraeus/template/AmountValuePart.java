@@ -2,7 +2,7 @@ package nl.astraeus.template;
 
 import nl.astraeus.template.cache.CachedFormatters;
 
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -10,12 +10,12 @@ import java.util.Map;
  * Date: 4/4/12
  * Time: 3:55 PM
  */
-public class DateValuePart extends TemplatePart {
+public class AmountValuePart extends TemplatePart {
 
     private String [] parts;
     private EscapeMode mode;
 
-    public DateValuePart(EscapeMode mode, int line, String text) {
+    public AmountValuePart(EscapeMode mode, int line, String text) {
         super(line);
 
         this.mode = mode;
@@ -27,14 +27,17 @@ public class DateValuePart extends TemplatePart {
         Object object = getValueFromModel(model, parts);
         String value;
 
-
         if (object != null) {
-            if (object instanceof Date) {
-                value = CachedFormatters.getDateFormat("dd-MM-yyyy").format(object);
+            if (object.getClass().equals(double.class) || object.getClass().equals(Double.class)) {
+                value = CachedFormatters.getAmountFormat("#,###,###,##0.00").format(object);
+            } else if (object.getClass().equals(float.class) || object.getClass().equals(Float.class)) {
+                value = CachedFormatters.getAmountFormat("#,###,###,##0.00").format(object);
             } else if (object.getClass().equals(long.class) || object.getClass().equals(Long.class)) {
-                value = CachedFormatters.getDateFormat("dd-MM-yyyy").format(new Date((Long)object));
+                value = CachedFormatters.getAmountFormat("#,###,###,##0.00").format((((Long)object) / 100.0));
+            } else if (object.getClass().equals(BigDecimal.class)) {
+                value = CachedFormatters.getAmountFormat("#,###,###,##0.00").format(object);
             } else {
-                throw new IllegalStateException("unknown date type "+object.getClass());
+                throw new IllegalStateException("unknown amount type "+object.getClass());
             }
 
             escape(value, result);

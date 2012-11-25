@@ -124,6 +124,8 @@ public class TemplateTokenizer {
                             tokenType = TokenType.TIME;
                         } else if (tokenText.startsWith("timestamp(") && tokenText.endsWith(")")) {
                             tokenType = TokenType.TIMESTAMP;
+                        } else if (tokenText.startsWith("amount(") && tokenText.endsWith(")")) {
+                            tokenType = TokenType.AMOUNT;
                         } else if (tokenText.startsWith("!")) {
                             tokenType = TokenType.PLAINVALUE;
                             tokenText = tokenText.substring(1);

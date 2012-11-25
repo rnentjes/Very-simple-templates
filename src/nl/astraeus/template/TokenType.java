@@ -32,5 +32,6 @@ public enum TokenType {
     DATE,
     DATETIME,
     TIME,
-    TIMESTAMP
+    TIMESTAMP,
+    AMOUNT
 }
