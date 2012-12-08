@@ -12,6 +12,8 @@ import java.util.Map;
  */
 public class SimpleTemplate {
 
+    private Charset charset = Charset.forName("UTF-8");
+
     private static Map<Integer, SimpleTemplate> templateCache = new HashMap<Integer, SimpleTemplate>();
 
     public static SimpleTemplate getTemplate(int hash) {
@@ -174,16 +176,20 @@ public class SimpleTemplate {
     }
 
     public String render(Map<String, Object> model) {
-        StringBuilder result = new StringBuilder();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        render(model, result);
+        try {
+            render(model, out);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
 
-        return result.toString();
+        return new String(out.toByteArray(), charset);
     }
 
-    public void render(Map<String, Object> model, StringBuilder result) {
+    public void render(Map<String, Object> model, OutputStream out) throws IOException {
         for (TemplatePart part : parser.getParts()) {
-            part.render(model, result);
+            part.render(model, out);
         }
     }
 

@@ -1,5 +1,8 @@
 package nl.astraeus.template;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -9,16 +12,18 @@ import java.util.Map;
  */
 public class StringPart extends TemplatePart {
 
-    private String part;
+
+    private static Charset charset = Charset.forName("UTF-8");
+    private byte [] part;
 
     public StringPart(int line, String part) {
         super(line);
 
-        this.part = part;
+        this.part = part.getBytes(charset);
     }
 
     @Override
-    public void render(Map<String, Object> model, StringBuilder result) {
-        result.append(part);
+    public void render(Map<String, Object> model, OutputStream result) throws IOException {
+        result.write(part);
     }
 }

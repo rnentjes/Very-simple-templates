@@ -1,5 +1,7 @@
 package nl.astraeus.template;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
 
 /**
@@ -19,11 +21,11 @@ public abstract class TemplatePart {
         return line;
     }
 
-    public abstract void render(Map<String, Object> model, StringBuilder result);
+    public abstract void render(Map<String, Object> model, OutputStream result) throws IOException;
 
-    protected void renderParts(TemplatePart [] parts, Map<String, Object> model, StringBuilder result) {
+    protected void renderParts(TemplatePart [] parts, Map<String, Object> model, OutputStream out) throws IOException {
         for (TemplatePart part : parts) {
-            part.render(model, result);
+            part.render(model, out);
         }
     }
 

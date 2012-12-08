@@ -1,5 +1,8 @@
 package nl.astraeus.template;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -8,6 +11,7 @@ import java.util.Map;
  * Time: 3:55 PM
  */
 public class PlainValuePart extends TemplatePart {
+    private static Charset charset = Charset.forName("UTF-8");
 
     private String [] parts;
 
@@ -18,7 +22,7 @@ public class PlainValuePart extends TemplatePart {
     }
 
     @Override
-    public void render(Map<String, Object> model, StringBuilder result) {
-        result.append(String.valueOf(getValueFromModel(model, parts)));
+    public void render(Map<String, Object> model, OutputStream result) throws IOException {
+        result.write(String.valueOf(getValueFromModel(model, parts)).getBytes(charset));
     }
 }

@@ -1,5 +1,7 @@
 package nl.astraeus.template;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +35,7 @@ public class DefinePart extends TemplatePart {
     }
 
     @Override
-    public void render(Map<String, Object> model, StringBuilder result) {
+    public void render(Map<String, Object> model, OutputStream result) throws IOException {
         for (TemplatePart part : parts) {
             part.render(model, result);
         }

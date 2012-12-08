@@ -1,5 +1,8 @@
 package nl.astraeus.template;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -9,8 +12,17 @@ import java.util.Map;
  */
 public class ValuePart extends TemplatePart {
 
-    private String [] parts;
-    private EscapeMode mode;
+    private static Charset charset = Charset.forName("UTF-8");
+
+    private static byte [] LESS_THEN    = "&lt;".getBytes(charset);
+    private static byte [] GREATER_THEN = "&gt;".getBytes(charset);
+    private static byte [] AMPERSAND    = "&amp;".getBytes(charset);
+    private static byte [] DOUBLE_QUOTE = "&quot;".getBytes(charset);
+    private static byte [] BACKSLASH    = "&#39;".getBytes(charset);
+    private static byte [] BR           = "<br/>\n".getBytes(charset);
+
+    protected String [] parts;
+    protected EscapeMode mode;
 
     public ValuePart(EscapeMode mode, int line, String text) {
         super(line);
@@ -20,7 +32,7 @@ public class ValuePart extends TemplatePart {
     }
 
     @Override
-    public void render(Map<String, Object> model, StringBuilder result) {
+    public void render(Map<String, Object> model, OutputStream result) throws IOException {
         Object object = getValueFromModel(model, parts);
 
         if (object != null) {
@@ -39,13 +51,13 @@ public class ValuePart extends TemplatePart {
         }
     }
 
-    private void escape(String value, StringBuilder result) {
+    protected void escape(String value, OutputStream out) throws IOException {
         switch(mode) {
             case HTML:
-                escapeHtml(value, result);
+                escapeHtml(value, out);
                 break;
             case HTMLBR:
-                escapeHtmlBR(value, result);
+                escapeHtmlBR(value, out);
                 break;
             case JAVASCRIPT:
             case JSON:
@@ -53,12 +65,12 @@ public class ValuePart extends TemplatePart {
                 throw new IllegalStateException("Escape mode "+mode+" not supported yet");
             case NONE:
             default:
-                result.append(value);
+                out.write(value.getBytes(charset));
                 break;
         }
     }
 
-    private void escapeHtml(String value, StringBuilder result) {
+    protected void escapeHtml(String value, OutputStream out) throws IOException {
         for (int index = 0; index < value.length(); index++) {
             char ch = value.charAt(index);
 
@@ -67,28 +79,32 @@ public class ValuePart extends TemplatePart {
 
             switch(ch) {
                 case '<':
-                    result.append("&lt;");
+                    out.write(LESS_THEN);
                     break;
                 case '>':
-                    result.append("&gt;");
+                    out.write(GREATER_THEN);
                     break;
                 case '&':
-                    result.append("&amp;");
+                    out.write(AMPERSAND);
                     break;
                 case '"':
-                    result.append("&quot;");
+                    out.write(DOUBLE_QUOTE);
                     break;
                 case '\'':
-                    result.append("&#39;");
+                    out.write(BACKSLASH);
                     break;
                 default:
-                    result.append(ch);
+                    if (ch < 128) {
+                        out.write((byte)ch);
+                    } else {
+                        out.write(new String(new char[] { ch }).getBytes(charset));
+                    }
             }
         }
 
     }
 
-    private void escapeHtmlBR(String value, StringBuilder result) {
+    protected void escapeHtmlBR(String value, OutputStream out) throws IOException {
         for (int index = 0; index < value.length(); index++) {
             char ch = value.charAt(index);
 
@@ -97,25 +113,29 @@ public class ValuePart extends TemplatePart {
 
             switch(ch) {
                 case '<':
-                    result.append("&lt;");
+                    out.write(LESS_THEN);
                     break;
                 case '>':
-                    result.append("&gt;");
+                    out.write(GREATER_THEN);
                     break;
                 case '&':
-                    result.append("&amp;");
+                    out.write(AMPERSAND);
                     break;
                 case '"':
-                    result.append("&quot;");
+                    out.write(DOUBLE_QUOTE);
                     break;
                 case '\'':
-                    result.append("&#39;");
+                    out.write(BACKSLASH);
                     break;
                 case '\n':
-                    result.append("<br/>\n");
+                    out.write(BR);
                     break;
                 default:
-                    result.append(ch);
+                    if (ch < 128) {
+                        out.write((byte)ch);
+                    } else {
+                        out.write(new String(new char[] { ch }).getBytes(charset));
+                    }
             }
         }
 

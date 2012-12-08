@@ -1,5 +1,7 @@
 package nl.astraeus.template;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -104,7 +106,7 @@ public class ForEachPart extends TemplatePart {
     }
 
     @Override
-    public void render(Map<String, Object> model, StringBuilder result) {
+    public void render(Map<String, Object> model, OutputStream result) throws IOException {
         boolean alt = true;
         boolean first = true;
 

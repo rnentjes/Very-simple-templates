@@ -1,5 +1,7 @@
 package nl.astraeus.template;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +29,7 @@ public class CallPart extends TemplatePart {
     }
 
     @Override
-    public void render(Map<String, Object> model, StringBuilder result) {
+    public void render(Map<String, Object> model, OutputStream result) throws IOException {
         String [] defineVariables = define.getVariables();
 
         if (defineVariables.length != variables.length) {
