@@ -51,11 +51,11 @@ public class ReflectHelper {
     private int getFullNameHash(Object o, String name, Class... parameters) {
         int result = o.getClass().hashCode();
 
-        result *= 7;
+        result *= 31;
         result += name.hashCode();
 
         for (Class c : parameters) {
-            result *= 7;
+            result *= 31;
             result += c.hashCode();
 
         }
