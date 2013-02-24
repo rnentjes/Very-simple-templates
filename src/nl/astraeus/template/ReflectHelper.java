@@ -279,7 +279,7 @@ public class ReflectHelper {
                         result = entry.getValue();
                     }
                 } else {
-                    Method method = null;
+                    Method method;
 
                     method = findGetMethod(model, fields[skip]);
 
