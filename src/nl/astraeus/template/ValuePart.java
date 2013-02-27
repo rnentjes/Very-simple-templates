@@ -2,6 +2,8 @@ package nl.astraeus.template;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -22,6 +24,7 @@ public class ValuePart extends TemplatePart {
     private static byte [] BR           = "<br/>\n".getBytes(charset);
 
     protected String [] parts;
+    protected Method[] methods;
     protected EscapeMode mode;
 
     public ValuePart(EscapeMode mode, int line, String text) {
@@ -29,6 +32,7 @@ public class ValuePart extends TemplatePart {
 
         this.mode = mode;
         parts = text.split("\\.");
+        methods = new Method[parts.length];
     }
 
     @Override
@@ -49,6 +53,57 @@ public class ValuePart extends TemplatePart {
 
             throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getLine());
         }
+    }
+
+    @Override
+    protected Object getValueFromModel(Map<String, Object> model, String [] parts) {
+        int index = 0;
+        Object value = null;
+
+        try {
+            if (parts.length > index) {
+                value = model.get(parts[index]);
+
+                while(value != null && parts.length > ++index) {
+                    if (value instanceof Map) {
+                        value = ((Map)value).get(parts[index]);
+                    } else {
+                        if (methods[index] == null) {
+                            methods[index] = ReflectHelper.get().findGetMethod(value, parts[index]);
+
+                            if (methods[index] == null) {
+                                methods[index] = ReflectHelper.get().findIsMethod(value, parts[index]);
+                            }
+                        }
+
+                        try {
+                            if (methods[index] == null) {
+                                value = ReflectHelper.get().getMethodValue(value, parts[index]);
+                            } else {
+                                value = methods[index].invoke(value);
+                            }
+                        } catch (IllegalAccessException e) {
+                            value = ReflectHelper.get().getMethodValue(value, parts[index]);
+                        } catch (InvocationTargetException e) {
+                            value = ReflectHelper.get().getMethodValue(value, parts[index]);
+                        }
+                    }
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            String partString = "";
+
+            for (String p : parts) {
+                if (partString.length() > 0) {
+                    partString = partString + ".";
+                }
+                partString =  partString + p;
+            }
+
+            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getLine());
+        }
+
+        return value;
     }
 
     protected void escape(String value, OutputStream out) throws IOException {
