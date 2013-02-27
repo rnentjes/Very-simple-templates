@@ -26,4 +26,9 @@ public class StringPart extends TemplatePart {
     public void render(Map<String, Object> model, OutputStream result) throws IOException {
         result.write(part);
     }
+
+    @Override
+    public String toString() {
+        return new String(part, charset);
+    }
 }
