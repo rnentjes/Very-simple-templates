@@ -24,7 +24,7 @@ public class ValuePart extends TemplatePart {
     private static byte [] BR           = "<br/>\n".getBytes(charset);
 
     protected String [] parts;
-    protected Method[] methods;
+    protected Method [] methods;
     protected EscapeMode mode;
 
     public ValuePart(EscapeMode mode, int line, String text) {
