@@ -115,7 +115,32 @@ public class ForEachPart extends TemplatePart {
         //tmpModel.remove(modelParts[0]);
         Object value = getValueFromModel(model, modelParts);
 
-        if (value instanceof Iterable) {
+        if (value instanceof Object[]) {
+            Object[] values = (Object[])value;
+            for (int i=0; i<values.length;i++) {
+                Object object = values[i];
+                tmpModel.put(parameterName, object);
+
+                tmpModel.put("eachfirst", first);
+                tmpModel.put("eachalt", alt);
+                tmpModel.put("eachlast", i == values.length-1);
+
+                if (first && firstParts != null) {
+                    renderParts(firstParts, tmpModel,result);
+                } else if (!(i == values.length-1) && lastParts != null) {
+                    renderParts(lastParts, tmpModel,result);
+                } else if (alt && altParts != null) {
+                    renderParts(altParts, tmpModel, result);
+                } else if (parts != null) {
+                    renderParts(parts, tmpModel, result);
+                } else {
+                    throw new RenderException("Can't find current block to render in foreach", getLine());
+                }
+
+                alt = !alt;
+                first = false;
+            }
+        } else if (value instanceof Iterable) {
             Iterator it = ((Iterable)value).iterator();
 
             while(it.hasNext()) {
