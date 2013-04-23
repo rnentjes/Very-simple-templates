@@ -167,6 +167,9 @@ public class TemplateParser {
                 case DATE:
                     stack.peek().add(new DateValuePart(currentEscapeMode.peek().getMode(), token.getLine(), getParameterFromCommand(token.getValue())));
                     break;
+                case DATETIME:
+                    stack.peek().add(new DateTimeValuePart(currentEscapeMode.peek().getMode(), token.getLine(), getParameterFromCommand(token.getValue())));
+                    break;
                 case AMOUNT:
                     stack.peek().add(new AmountValuePart(currentEscapeMode.peek().getMode(), token.getLine(), getParameterFromCommand(token.getValue())));
                     break;
