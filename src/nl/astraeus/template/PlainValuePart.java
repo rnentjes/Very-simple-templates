@@ -14,15 +14,21 @@ public class PlainValuePart extends TemplatePart {
     private static Charset charset = Charset.forName("UTF-8");
 
     private String [] parts;
+    private String text;
 
     public PlainValuePart(int line, String text) {
         super(line);
 
+        this.text = text;
         parts = text.split("\\.");
     }
 
     @Override
     public void render(Map<String, Object> model, OutputStream result) throws IOException {
         result.write(String.valueOf(getValueFromModel(model, parts)).getBytes(charset));
+    }
+
+    public String getParameterName() {
+        return text;
     }
 }

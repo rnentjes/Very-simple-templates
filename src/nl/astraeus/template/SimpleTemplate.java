@@ -3,7 +3,9 @@ package nl.astraeus.template;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: rnentjes
@@ -203,5 +205,25 @@ public class SimpleTemplate {
 
     protected DefinePart getDefine(String name) {
         return defines.get(name);
+    }
+
+    public Set<String> getUsedParamaterNames() {
+        Set<String> result = new HashSet<String>();
+
+        for (TemplatePart part : parser.getParts()) {
+            if (part instanceof ValuePart) {
+                ValuePart vp = (ValuePart)part;
+
+                result.add(vp.getParameterName());
+            } else if (part instanceof PlainValuePart) {
+                PlainValuePart vp = (PlainValuePart)part;
+
+                result.add(vp.getParameterName());
+            } else if (part instanceof ForEachPart) {
+
+            }
+        }
+
+        return result;
     }
 }

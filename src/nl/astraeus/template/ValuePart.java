@@ -23,6 +23,7 @@ public class ValuePart extends TemplatePart {
     private static byte [] BACKSLASH    = "&#39;".getBytes(charset);
     private static byte [] BR           = "<br/>\n".getBytes(charset);
 
+    protected String text;
     protected String [] parts;
     protected Method [] methods;
     protected EscapeMode mode;
@@ -31,6 +32,7 @@ public class ValuePart extends TemplatePart {
         super(line);
 
         this.mode = mode;
+        this.text = text;
         parts = text.split("\\.");
         methods = new Method[parts.length];
     }
@@ -196,4 +198,7 @@ public class ValuePart extends TemplatePart {
 
     }
 
+    public String getParameterName() {
+        return text;
+    }
 }
