@@ -8,7 +8,15 @@ package nl.astraeus.template;
 public class ParseException extends RuntimeException {
 
     private String message;
+    private String template;
     private int line;
+
+    public ParseException(String message, String template, int line) {
+        super();
+        this.message = message;
+        this.line = line;
+        this.template = template;
+    }
 
     public ParseException(String message, int line) {
         super();
@@ -18,7 +26,11 @@ public class ParseException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "ParseException '" + message + "' in line: "+line;
+        if (template != null) {
+            return "ParseException '" + message + "' in "+template+":"+line;
+        } else {
+            return "ParseException '" + message + "' in line: "+line;
+        }
     }
 
 }

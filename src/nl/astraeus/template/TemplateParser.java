@@ -58,6 +58,20 @@ public class TemplateParser {
         parseTemplate(template);
     }
 
+    public String getTemplateFileName() {
+        if (resourceClass != null && resourceLocation != null) {
+            if (resourceLocation.startsWith("/")) {
+                return resourceLocation;
+            } else {
+                return resourceClass.getName()+":"+resourceLocation;
+            }
+        } else if (resourceFile != null) {
+            return resourceFile.getAbsolutePath();
+        } else {
+            return "<string template>";
+        }
+    }
+
     private String readFile(File file) {
         String result;
         try {
@@ -213,7 +227,7 @@ public class TemplateParser {
                     String [] variableParts = new String[0];
 
                     if (bothParts.length != 2) {
-                        throw new ParseException("Wrong number of arguments for define", token.getLine());
+                        throw new ParseException("Wrong number of arguments for define", getTemplateFileName(), token.getLine());
                     } else {
                         String variableName = bothParts[0].trim();
 
@@ -234,7 +248,7 @@ public class TemplateParser {
                     String [] varParts = new String[0];
 
                     if (bothParamParts.length != 2) {
-                        throw new ParseException("Wrong number of arguments for define", token.getLine());
+                        throw new ParseException("Wrong number of arguments for define", getTemplateFileName(), token.getLine());
                     } else {
                         String variableName = bothParamParts[0].trim();
 
@@ -242,7 +256,7 @@ public class TemplateParser {
                         DefinePart define = defines.get(variableName);
 
                         if (define == null) {
-                            throw new ParseException("No define for call to "+variableName, token.getLine());
+                            throw new ParseException("No define for call to "+variableName, getTemplateFileName(), token.getLine());
                         }
 
                         stack.peek().add(new CallPart(token.getLine(), define, variableName, varParts));
@@ -262,6 +276,10 @@ public class TemplateParser {
                     stack.push(new ArrayList<TemplatePart>());
                     break;
                 case ENDIF:
+                    if (currentIfPart.isEmpty()) {
+                        throw new ParseException("Empty stack in endif, if statement not correctly started?", getTemplateFileName(), token.getLine());
+                    }
+
                     if (currentIfPart.peek().isHasElse()) {
                         currentIfPart.peek().setElseParts(stack.pop());
                     } else {
@@ -273,7 +291,7 @@ public class TemplateParser {
                     stack.push(new ArrayList<TemplatePart>());
                     String [] parts = getParameterFromCommand(token.getValue()).split(" as ");
                     if (parts.length != 2) {
-                        throw new ParseException("Can't parse foreach expression, eg (persons as person)", token.getLine());
+                        throw new ParseException("Can't parse foreach expression, eg (persons as person)", getTemplateFileName(), token.getLine());
                     }
                     currentForEach.push(new ForEachPart(token.getLine(), parts[0], parts[1]));
                     currentForEach.peek().setIsMainPart();
@@ -313,7 +331,7 @@ public class TemplateParser {
             if (currentForEach.size() > 0) {
                 ForEachPart part = currentForEach.pop();
 
-                throw new ParseException("Foreach not closed", part.getLine());
+                throw new ParseException("Foreach not closed", getTemplateFileName(), part.getLine());
             } else if (currentIfPart.size() > 0) {
                 IfPart part = currentIfPart.pop();
 
@@ -321,16 +339,16 @@ public class TemplateParser {
             } else if (currentEscapeMode.size() > 1) {
                 EscapeModeInfo modeInfo = currentEscapeMode.pop();
 
-                throw new ParseException("Escape block not closed ("+modeInfo.getMode().toString().toLowerCase()+")", modeInfo.getLine());
+                throw new ParseException("Escape block not closed ("+modeInfo.getMode().toString().toLowerCase()+")", getTemplateFileName(), modeInfo.getLine());
             } else {
                 List<TemplatePart> parts = stack.pop();
 
                 if (!parts.isEmpty()) {
                     TemplatePart part = parts.get(0);
 
-                    throw new ParseException("Template not parsed completely, last remaining part: "+part, part.getLine());
+                    throw new ParseException("Template not parsed completely, last remaining part: "+part, getTemplateFileName(), part.getLine());
                 } else {
-                    throw new ParseException("Template not parsed completely, couldn't retrieve last remaining part (giving up)", -1);
+                    throw new ParseException("Template not parsed completely, couldn't retrieve last remaining part (giving up)", getTemplateFileName(), -1);
                 }
             }
         }
