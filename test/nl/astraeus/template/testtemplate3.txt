@@ -9,5 +9,3 @@ ${/each}
 ${if(persons)}
  Some text here
 ${/if}
-
-If with no end

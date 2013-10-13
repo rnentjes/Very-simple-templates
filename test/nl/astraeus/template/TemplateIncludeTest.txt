@@ -1,0 +1,16 @@
+Name:
+
+${include(TemplateIncludeTestInclude.txt)}
+
+${foreach(persons as person)}
+  ${person.name},
+${eachlast}
+  ${person.name}
+${/each}
+
+${if(persons)}
+ Some text here
+${/if}
+
+
+${call(testdefine | "parameter-1", title)}
