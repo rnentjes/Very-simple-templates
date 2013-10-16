@@ -170,22 +170,22 @@ public class TemplateParser {
                     currentEscapeMode.pop();
                     break;
                 case STRING:
-                    stack.peek().add(new StringPart(token.getLine(), token.getValue()));
+                    stack.peek().add(new StringPart(token.getLine(), getTemplateFileName(), token.getValue()));
                     break;
                 case VALUE:
-                    stack.peek().add(new ValuePart(currentEscapeMode.peek().getMode(), token.getLine(), token.getValue()));
+                    stack.peek().add(new ValuePart(currentEscapeMode.peek().getMode(), token.getLine(), getTemplateFileName(), token.getValue()));
                     break;
                 case PLAINVALUE:
-                    stack.peek().add(new PlainValuePart(token.getLine(), token.getValue()));
+                    stack.peek().add(new PlainValuePart(token.getLine(), getTemplateFileName(), token.getValue()));
                     break;
                 case DATE:
-                    stack.peek().add(new DateValuePart(currentEscapeMode.peek().getMode(), token.getLine(), getParameterFromCommand(token.getValue())));
+                    stack.peek().add(new DateValuePart(currentEscapeMode.peek().getMode(), token.getLine(), getTemplateFileName(), getParameterFromCommand(token.getValue())));
                     break;
                 case DATETIME:
-                    stack.peek().add(new DateTimeValuePart(currentEscapeMode.peek().getMode(), token.getLine(), getParameterFromCommand(token.getValue())));
+                    stack.peek().add(new DateTimeValuePart(currentEscapeMode.peek().getMode(), token.getLine(), getTemplateFileName(), getParameterFromCommand(token.getValue())));
                     break;
                 case AMOUNT:
-                    stack.peek().add(new AmountValuePart(currentEscapeMode.peek().getMode(), token.getLine(), getParameterFromCommand(token.getValue())));
+                    stack.peek().add(new AmountValuePart(currentEscapeMode.peek().getMode(), token.getLine(), getTemplateFileName(), getParameterFromCommand(token.getValue())));
                     break;
                 case INCLUDE:
                     String [] incParts = getParameterFromCommand(token.getValue()).split("\\,");
@@ -217,9 +217,9 @@ public class TemplateParser {
                     }
 
                     if (objectParts.length == 2) {
-                        stack.peek().add(new IncludePart(token.getLine(), tpl, objectParts[0].trim(), objectParts[1].trim()));
+                        stack.peek().add(new IncludePart(token.getLine(), getTemplateFileName(), tpl, objectParts[0].trim(), objectParts[1].trim()));
                     } else {
-                        stack.peek().add(new IncludePart(token.getLine(), tpl));
+                        stack.peek().add(new IncludePart(token.getLine(), getTemplateFileName(), tpl));
                     }
                     break;
                 case DEFINE:
@@ -235,7 +235,7 @@ public class TemplateParser {
 
                         stack.push(new ArrayList<TemplatePart>());
 
-                        currentDefinePart.push(new DefinePart(token.getLine(), simpleTemplate, variableName, variableParts));
+                        currentDefinePart.push(new DefinePart(token.getLine(), getTemplateFileName(), simpleTemplate, variableName, variableParts));
                     }
                     break;
                 case ENDDEFINE:
@@ -259,16 +259,16 @@ public class TemplateParser {
                             throw new ParseException("No define for call to "+variableName, getTemplateFileName(), token.getLine());
                         }
 
-                        stack.peek().add(new CallPart(token.getLine(), define, variableName, varParts));
+                        stack.peek().add(new CallPart(token.getLine(), getTemplateFileName(), define, variableName, varParts));
                     }
                     break;
                 case IF:
                     stack.push(new ArrayList<TemplatePart>());
-                    currentIfPart.push(new IfPart(token.getLine(), getParameterFromCommand(token.getValue())));
+                    currentIfPart.push(new IfPart(token.getLine(), getTemplateFileName(), getParameterFromCommand(token.getValue())));
                     break;
                 case IFNOT:
                     stack.push(new ArrayList<TemplatePart>());
-                    currentIfPart.push(new IfNotPart(token.getLine(), getParameterFromCommand(token.getValue())));
+                    currentIfPart.push(new IfNotPart(token.getLine(), getTemplateFileName(), getParameterFromCommand(token.getValue())));
                     break;
                 case ELSE:
                     currentIfPart.peek().setIfParts(stack.pop());
@@ -293,7 +293,7 @@ public class TemplateParser {
                     if (parts.length != 2) {
                         throw new ParseException("Can't parse foreach expression, eg (persons as person)", getTemplateFileName(), token.getLine());
                     }
-                    currentForEach.push(new ForEachPart(token.getLine(), parts[0], parts[1]));
+                    currentForEach.push(new ForEachPart(token.getLine(), getTemplateFileName(), parts[0], parts[1]));
                     currentForEach.peek().setIsMainPart();
                     break;
                 case EACHMAIN:

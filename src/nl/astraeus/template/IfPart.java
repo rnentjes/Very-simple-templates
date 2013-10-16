@@ -18,8 +18,8 @@ public class IfPart extends TemplatePart {
     private boolean hasElse;
     private String conditionText;
 
-    public IfPart(int line, String ifCondition) {
-        super(line);
+    public IfPart(int line, String templateName, String ifCondition) {
+        super(line, templateName);
 
         this.conditionText = ifCondition;
         this.ifCondition = new BooleanCondition(ifCondition);
@@ -56,7 +56,7 @@ public class IfPart extends TemplatePart {
                 renderParts(elseParts, model, result);
             }
         } catch (IllegalArgumentException e) {
-            throw new RenderException("Can't evaluate condition ("+conditionText+")", getLine());
+            throw new RenderException("Can't evaluate condition ("+conditionText+")", getFileName(), getLine());
         }
     }
 }

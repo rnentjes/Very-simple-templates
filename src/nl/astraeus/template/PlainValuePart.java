@@ -16,8 +16,8 @@ public class PlainValuePart extends TemplatePart {
     private String [] parts;
     private String text;
 
-    public PlainValuePart(int line, String text) {
-        super(line);
+    public PlainValuePart(int line, String templateName, String text) {
+        super(line, templateName);
 
         this.text = text;
         parts = text.split("\\.");

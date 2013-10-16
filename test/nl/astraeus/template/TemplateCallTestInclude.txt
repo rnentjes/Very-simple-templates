@@ -1,0 +1,7 @@
+this is for the file include test
+
+${define(testdefine | param1, param2)}
+DEFINE:
+  ${if(param1)}PARAM1: ${param1}${/if}
+  ${if(param2)}PARAM2: ${param2}${/if}
+${/define}

@@ -16,8 +16,8 @@ public class CallPart extends TemplatePart {
     private String name;
     private String [] variables;
 
-    public CallPart(int line, DefinePart define, String name, String[] variables) {
-        super(line);
+    public CallPart(int line, String templateName, DefinePart define, String name, String[] variables) {
+        super(line, templateName);
 
         this.define = define;
         this.name = name;
@@ -33,13 +33,21 @@ public class CallPart extends TemplatePart {
         String [] defineVariables = define.getVariables();
 
         if (defineVariables.length != variables.length) {
-            throw new RenderException("Call and Define have different variable counts ("+name+")", getLine());
+//            throw new RenderException("Call and Define have different variable counts ("+name+")", getLine());
         }
 
         Map<String, Object> tmpModel = new HashMap<String, Object>();
         for (int index = 0; index < variables.length; index++) {
             Object value;
             String variable = variables[index];
+            String name = defineVariables[index];
+
+            if (variable.contains("=")) {
+                String [] nameValue = variable.split("\\=");
+
+                name = nameValue[0].trim();
+                variable = nameValue[1].trim();
+            }
 
             if (variable.startsWith("\"") && variable.endsWith("\"")) {
                 value = variable.substring(1, variable.length() - 1);
@@ -47,9 +55,15 @@ public class CallPart extends TemplatePart {
                 value = getValueFromModel(model, variable.split("\\."));
             }
 
-            tmpModel.put(defineVariables[index], value);
+            tmpModel.put(name, value);
         }
 
-        define.render(tmpModel, result);
+        try {
+            define.render(tmpModel, result);
+        } catch (RenderException e) {
+            RenderException caller = new RenderException(e, "Error calling  define \""+name+"\"", getFileName(), getLine());
+
+            throw caller;
+        }
     }
 }

@@ -7,18 +7,31 @@ package nl.astraeus.template;
  */
 public class RenderException extends RuntimeException {
 
-    private String message;
-    private int line;
+    private final String template;
+    private final String message;
+    private final int line;
 
-    public RenderException(String message, int line) {
+    public RenderException(String message, String template, int line) {
         super();
         this.message = message;
         this.line = line;
+        this.template = template;
+    }
+
+    public RenderException(RenderException cause, String message, String template, int line) {
+        super(cause);
+        this.message = message;
+        this.line = line;
+        this.template = template;
     }
 
     @Override
     public String getMessage() {
-        return "RenderException '" + message + "' in line: "+line;
+        if (template != null) {
+            return "RenderException '" + message + "' in "+template+":"+line;
+        } else {
+            return "RenderException '" + message + "' in line: "+line;
+        }
     }
 
 }

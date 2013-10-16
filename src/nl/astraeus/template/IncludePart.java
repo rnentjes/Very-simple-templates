@@ -16,16 +16,16 @@ public class IncludePart extends TemplatePart {
     private String [] modelParts = null;
     private String parameterName = null;
 
-    public IncludePart(int line, SimpleTemplate template, String modelObject, String parameterName) {
-        super(line);
+    public IncludePart(int line, String templateName, SimpleTemplate template, String modelObject, String parameterName) {
+        super(line, templateName);
 
         this.template = template;
         this.modelParts = modelObject.split("\\.");
         this.parameterName = parameterName;
     }
 
-    public IncludePart(int line, SimpleTemplate template) {
-        super(line);
+    public IncludePart(int line, String templateName, SimpleTemplate template) {
+        super(line, templateName);
 
         this.template = template;
     }

@@ -11,14 +11,20 @@ import java.util.Map;
  */
 public abstract class TemplatePart {
 
-    private int line;
+    private final int line;
+    private final String template;
 
-    protected TemplatePart(int line) {
+    protected TemplatePart(int line, String template) {
         this.line = line;
+        this.template = template;
     }
 
     protected int getLine() {
         return line;
+    }
+
+    protected String getFileName() {
+        return template;
     }
 
     public abstract void render(Map<String, Object> model, OutputStream result) throws IOException;
@@ -61,7 +67,7 @@ public abstract class TemplatePart {
                 partString =  partString + p;
             }
 
-            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getLine());
+            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, template, getLine());
         }
 
         return value;

@@ -17,8 +17,8 @@ public class DefinePart extends TemplatePart {
     private String name;
     private String [] variables;
 
-    public DefinePart(int line, SimpleTemplate owner, String name, String [] variables) {
-        super(line);
+    public DefinePart(int line, String templateName, SimpleTemplate owner, String name, String [] variables) {
+        super(line, templateName);
 
         this.owner = owner;
         this.parts = new TemplatePart[0];

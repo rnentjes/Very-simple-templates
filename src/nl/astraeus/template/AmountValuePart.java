@@ -14,8 +14,8 @@ import java.util.Map;
  */
 public class AmountValuePart extends ValuePart {
 
-    public AmountValuePart(EscapeMode mode, int line, String text) {
-        super(mode, line, text);
+    public AmountValuePart(EscapeMode mode, int line, String templateName, String text) {
+        super(mode, line, templateName, text);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class AmountValuePart extends ValuePart {
                 partString =  partString + p;
             }
 
-            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getLine());
+            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getFileName(), getLine());
         }
     }
 

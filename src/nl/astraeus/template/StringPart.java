@@ -16,8 +16,8 @@ public class StringPart extends TemplatePart {
     private static Charset charset = Charset.forName("UTF-8");
     private byte [] part;
 
-    public StringPart(int line, String part) {
-        super(line);
+    public StringPart(int line, String templateName, String part) {
+        super(line, templateName);
 
         this.part = part.getBytes(charset);
     }

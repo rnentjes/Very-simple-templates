@@ -28,8 +28,8 @@ public class ValuePart extends TemplatePart {
     protected Method [] methods;
     protected EscapeMode mode;
 
-    public ValuePart(EscapeMode mode, int line, String text) {
-        super(line);
+    public ValuePart(EscapeMode mode, int line, String templateName, String text) {
+        super(line, templateName);
 
         this.mode = mode;
         this.text = text;
@@ -53,7 +53,7 @@ public class ValuePart extends TemplatePart {
                 partString =  partString + p;
             }
 
-            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getLine());
+            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getFileName(), getLine());
         }
     }
 
@@ -102,7 +102,7 @@ public class ValuePart extends TemplatePart {
                 partString =  partString + p;
             }
 
-            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getLine());
+            throw new RenderException("Can't retrieve value from model, model: "+model.get(parts[0])+", parts: "+partString, getFileName(), getLine());
         }
 
         return value;

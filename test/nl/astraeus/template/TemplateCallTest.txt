@@ -1,0 +1,9 @@
+Name:
+
+${include(TemplateCallTestInclude.txt)}
+
+${call(testdefine | "parameter-1", title)}
+
+${call(testdefine | param1 = title)}
+
+${call(testdefine | param2 = "parameter-2")}

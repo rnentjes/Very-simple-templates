@@ -31,8 +31,8 @@ public class ForEachPart extends TemplatePart {
     private String [] modelParts;
     private String parameterName;
 
-    public ForEachPart(int line, String modelObject, String parameterName) {
-        super(line);
+    public ForEachPart(int line, String templateName, String modelObject, String parameterName) {
+        super(line, templateName);
 
         this.modelParts = modelObject.split("\\.");
         this.parameterName = parameterName;
@@ -134,7 +134,7 @@ public class ForEachPart extends TemplatePart {
                 } else if (parts != null) {
                     renderParts(parts, tmpModel, result);
                 } else {
-                    throw new RenderException("Can't find current block to render in foreach", getLine());
+                    throw new RenderException("Can't find current block to render in foreach", getFileName(), getLine());
                 }
 
                 alt = !alt;
@@ -160,7 +160,7 @@ public class ForEachPart extends TemplatePart {
                 } else if (parts != null) {
                     renderParts(parts, tmpModel, result);
                 } else {
-                    throw new RenderException("Can't find current block to render in foreach", getLine());
+                    throw new RenderException("Can't find current block to render in foreach", getFileName(), getLine());
                 }
 
                 alt = !alt;
