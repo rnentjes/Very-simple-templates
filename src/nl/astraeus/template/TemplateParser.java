@@ -256,7 +256,7 @@ public class TemplateParser {
                         DefinePart define = defines.get(variableName);
 
                         if (define == null) {
-                            throw new ParseException("No define for call to "+variableName, getTemplateFileName(), token.getLine());
+                            throw new ParseException("No define found for call to "+variableName, getTemplateFileName(), token.getLine());
                         }
 
                         stack.peek().add(new CallPart(token.getLine(), getTemplateFileName(), define, variableName, varParts));
