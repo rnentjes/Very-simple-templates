@@ -28,7 +28,7 @@ public class CachedFormatters {
     };
 
     public static String formatNano(long l) {
-        return getAmountFormat("###,##0.000").format((double) l / 1000000.0);
+        return getAmountFormat("###,##0.000000").format((double) l / 1000000.0);
     }
 
     public static DateFormat getDateFormat(String format) {
