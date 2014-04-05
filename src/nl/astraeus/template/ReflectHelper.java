@@ -265,33 +265,43 @@ public class ReflectHelper {
         Object result = null;
 
         try {
-            if (fields.length > (skip + 1)) {
-                Object subModel = this.getMethodValue(model, fields[skip]);
+            if (model instanceof Map) {
+                Object mapEntry = ((Map)model).get(fields[skip]);
 
-                result = getFieldValue(subModel, ++skip, fields);
-            } else {
-                // work around for: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4071957
-                if (model instanceof Map.Entry) {
-                    Map.Entry entry = (Map.Entry) model;
-                    if (fields[skip].equals("key")) {
-                        result = entry.getKey();
-                    } else if (fields[skip].equals("value")) {
-                        result = entry.getValue();
-                    }
+                if (fields.length > (skip + 1)) {
+                    return getMethodValue(mapEntry, ++skip, fields);
                 } else {
-                    Method method;
+                    return mapEntry;
+                }
+            } else {
+                if (fields.length > (skip + 1)) {
+                    Object subModel = this.getMethodValue(model, fields[skip]);
 
-                    method = findGetMethod(model, fields[skip]);
+                    result = getFieldValue(subModel, ++skip, fields);
+                } else {
+                    // work around for: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4071957
+                    if (model instanceof Map.Entry) {
+                        Map.Entry entry = (Map.Entry) model;
+                        if (fields[skip].equals("key")) {
+                            result = entry.getKey();
+                        } else if (fields[skip].equals("value")) {
+                            result = entry.getValue();
+                        }
+                    } else {
+                        Method method;
 
-                    if (method == null) {
-                        method = findIsMethod(model, fields[skip]);
+                        method = findGetMethod(model, fields[skip]);
+
+                        if (method == null) {
+                            method = findIsMethod(model, fields[skip]);
+                        }
+
+                        if (method == null) {
+                            throw new IllegalStateException("Can't find method " + fields[skip] + " in model " + model + ".");
+                        }
+
+                        result = method.invoke(model);
                     }
-
-                    if (method == null) {
-                        throw new IllegalStateException("Can't find method " + fields[skip] + " in model " + model + ".");
-                    }
-
-                    result = method.invoke(model);
                 }
             }
         } catch (IllegalAccessException e) {
