@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Very-simple-templates.iml" filepath="$PROJECT_DIR$/Very-simple-templates.iml" />
-      <module fileurl="file://$PROJECT_DIR$/very-simple-templates.iml" filepath="$PROJECT_DIR$/very-simple-templates.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/very-simple-templates.iml" filepath="$PROJECT_DIR$/.idea/modules/very-simple-templates.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/very-simple-templates_main.iml" filepath="$PROJECT_DIR$/.idea/modules/very-simple-templates_main.iml" group="very-simple-templates" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/very-simple-templates_test.iml" filepath="$PROJECT_DIR$/.idea/modules/very-simple-templates_test.iml" group="very-simple-templates" />
     </modules>
   </component>
 </project>

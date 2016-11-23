@@ -21,6 +21,9 @@
         <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="very-simple-templates_main" target="1.6" />
+      <module name="very-simple-templates_test" target="1.6" />
+    </bytecodeTargetLevel>
   </component>
 </project>
-
