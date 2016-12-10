@@ -1,4 +1,4 @@
-group 'nl.astraeus.template'
+group 'nl.astraeus'
 version '1.4-SNAPSHOT'
 
 apply plugin: 'java'
@@ -13,7 +13,8 @@ sourceSets {
     test.resources.srcDirs += 'test'
 }
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
 
 repositories {
     maven {

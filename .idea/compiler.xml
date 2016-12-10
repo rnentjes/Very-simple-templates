@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="Javac" />
-    <resourceExtensions />
     <wildcardResourcePatterns>
       <entry name="?*.properties" />
       <entry name="?*.xml" />
@@ -16,14 +14,9 @@
       <entry name="?*.ftl" />
       <entry name="?*.txt" />
     </wildcardResourcePatterns>
-    <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
-        <processorPath useClasspath="true" />
-      </profile>
-    </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="very-simple-templates_main" target="1.6" />
-      <module name="very-simple-templates_test" target="1.6" />
+      <module name="very-simple-templates_main" target="1.5" />
+      <module name="very-simple-templates_test" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>
