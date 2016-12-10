@@ -12,8 +12,6 @@ import java.util.Map;
  * User: rnentjes
  * Date: 8/12/12
  * Time: 2:49 PM
- * <p/>
- * (c) Astreaeus B.V.
  */
 public class TemplateCache {
 
